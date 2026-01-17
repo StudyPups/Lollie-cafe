@@ -1,566 +1,728 @@
-/* Base Styles */
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Comic Sans MS', cursive, sans-serif;
-  background: linear-gradient(to bottom, #fff5f5, #ffe4e4);
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-.screen {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.hidden {
-  display: none !important;
-}
-
-/* Start Screen */
-#startScreen h1 {
-  color: #F52887;
-  font-size: 60px;
-  text-align: center;
-  margin-bottom: 20px;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-}
-
-#startScreen p {
-  text-align: center;
-  font-size: 24px;
-  color: #E30B5D;
-  margin: 10px 0 30px 0;
-}
-
-/* Buttons */
-.big-button {
-  background-color: hotpink;
-  color: white;
-  border: 2px solid #FFB2D0;
-  padding: 20px 40px;
-  font-size: 30px;
-  border-radius: 50px;
-  cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-  font-family: 'Comic Sans MS', cursive;
-  transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
-}
-
-.big-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 8px rgba(0,0,0,0.3);
-  background-color: #FF1493;
-}
-
-.big-button.secondary {
-  background-color: #9370DB;
-  border-color: #DDA0DD;
-}
-
-.back-button, .quit-button {
-  background-color: #888;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  font-size: 18px;
-  border-radius: 25px;
-  cursor: pointer;
-  margin-top: 20px;
-  font-family: 'Comic Sans MS', cursive;
-}
-
-.back-button:hover, .quit-button:hover {
-  background-color: #666;
-}
-
-.quit-button {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 100;
-}
-
-/* Level Select */
-#levelSelect {
-  background: #D462FF;
-}
-
-#levelSelect h1 {
-  color: white;
-  font-size: 48px;
-  margin-bottom: 40px;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-}
-
-.level-buttons {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  max-width: 900px;
-  width: 100%;
-  margin-bottom: 20px;
-}
-
-.level-button {
-  background: white;
-  border: 4px solid #F52887;
-  border-radius: 20px;
-  padding: 30px 20px;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-  font-family: 'Comic Sans MS', cursive;
-}
-
-.level-button:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-  border-color: #FF1493;
-}
-
-.level-button h3 {
-  margin: 0 0 10px 0;
-  color: #F52887;
-  font-size: 28px;
-}
-
-.level-button p {
-  margin: 5px 0;
-  color: #666;
-  font-size: 18px;
-}
-
-.level-button .level-desc {
-  font-size: 14px;
-  color: #999;
-  font-style: italic;
-}
-
-/* Game Screen */
-#gameScreen {
-  position: relative;
-  padding: 0;
-  background: #D462FF;
-  justify-content: flex-start; /* override .screen centering */
-}
-
-.cafe-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('background.png');
-  background-size: cover;
-  background-position: center;
-  opacity: 0.28;
-  z-index: 0;
-}
-
-/* Header */
-.cafe-header {
-  position: relative;
-  z-index: 10;
-  background: rgba(255, 255, 255, 0.92);
-  padding: 14px 22px;
-  width: 100%;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.14);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.header-left h2 {
-  margin: 0;
-  color: #F52887;
-  font-size: 30px;
-}
-
-.header-left p {
-  margin: 5px 0 0 0;
-  color: #666;
-  font-size: 16px;
-}
-
-.header-right {
-  text-align: right;
-}
-
-.header-right p {
-  margin: 5px 0;
-  font-size: 18px;
-  color: #333;
-}
-
-#score {
-  font-weight: bold;
-  color: #F52887;
-  font-size: 26px;
-}
-
-#timer {
-  font-weight: bold;
-  color: #FF6347;
-  font-size: 22px;
-}
-
-/* 2-column layout */
-.game-layout {
-  position: relative;
-  z-index: 10;
-  width: min(1100px, 96vw);
-  margin: 14px auto 86px auto;
-  display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  gap: 14px;
-  align-items: start;
-}
-
-/* Panels - softer, less “boxy” */
-.counter,
-.customer-area {
-  background: rgba(255, 255, 255, 0.90);
-  border-radius: 18px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.12);
-  overflow: hidden;
-}
-
-.customer-area {
-  padding: 16px;
-}
-
-.counter {
-  padding: 14px;
-}
-
-.counter h3 {
-  margin: 6px 0 12px 0;
-  text-align: center;
-  font-size: 22px;
-  color: #F52887;
-}
-
-/* Menu */
-.menu-items {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 12px;
-}
-
-.menu-button {
-  background: rgba(255,255,255,0.98);
-  border: 2px solid rgba(245, 40, 135, 0.55);
-  padding: 12px 10px;
-  font-size: 16px;
-  border-radius: 16px;
-  cursor: pointer;
-  font-family: 'Comic Sans MS', cursive;
-  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-
-.menu-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 14px rgba(0,0,0,0.16);
-  background: rgba(245, 40, 135, 0.10);
-}
-
-.menu-button.disabled,
-.menu-button:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-.item-thumb {
-  width: 54px;
-  height: 54px;
-  object-fit: contain;
-  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.12));
-}
-
-.item-name {
-  font-weight: bold;
-  font-size: 14px;
-  text-align: center;
-}
-
-.item-price {
-  font-size: 12px;
-  color: #666;
-}
-
-/* Customer */
-.customer {
-  text-align: center;
-  position: relative;
-  transform: translateX(120%);
-  opacity: 0;
-}
-
-.customer.enter {
-  animation: customerEnter 0.75s ease-out forwards;
-}
-
-@keyframes customerEnter {
-  to { transform: translateX(0); opacity: 1; }
-}
-
-.customer-img {
-  width: 190px;
-  height: 190px;
-  object-fit: contain;
-  margin-bottom: 10px;
-  filter: drop-shadow(0 6px 10px rgba(0,0,0,0.14));
-}
-
-.customer h3 {
-  font-size: 26px;
-  color: #333;
-  margin: 0 0 12px 0;
-}
-
-/* Bubble with icons */
-.speech-bubble {
-  background: rgba(255, 249, 196, 0.95);
-  padding: 16px 16px;
-  border-radius: 18px;
-  border: 2px solid rgba(255, 215, 0, 0.8);
-  position: relative;
-  display: inline-block;
-  min-width: 260px;
-  max-width: 520px;
-  box-shadow: 0 10px 16px rgba(0,0,0,0.12);
-}
-
-.speech-bubble::before {
-  content: '';
-  position: absolute;
-  bottom: -16px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 16px solid transparent;
-  border-right: 16px solid transparent;
-  border-top: 16px solid rgba(255, 215, 0, 0.8);
-}
-
-.speech-bubble p {
-  margin: 0;
-  font-size: 17px;
-  color: #333;
-  line-height: 1.35;
-}
-
-.bubble-items {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-  margin-top: 10px;
-}
-
-.bubble-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.75);
-  border: 1px solid rgba(0,0,0,0.08);
-}
-
-.bubble-thumb {
-  width: 26px;
-  height: 26px;
-  object-fit: contain;
-}
-
-/* Order Summary / Math */
-.order-summary {
-  background: rgba(255, 255, 255, 0.95);
-  padding: 12px;
-  border-radius: 12px;
-  margin-top: 12px;
-}
-
-.order-summary h4 {
-  margin: 0 0 8px 0;
-  color: #F52887;
-}
-
-.order-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 5px 0;
-  border-bottom: 1px solid rgba(0,0,0,0.08);
-}
-
-#totalDisplay {
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 2px solid rgba(245, 40, 135, 0.55);
-  font-size: 18px;
-  text-align: right;
-}
-
-#mathInput, #changeInput {
-  background: rgba(255, 255, 255, 0.95);
-  padding: 14px;
-  border-radius: 12px;
-  text-align: center;
-  margin-top: 12px;
-}
-
-#mathInput label, #changeInput label {
-  font-size: 18px;
-  color: #333;
-  font-weight: bold;
-  display: block;
-  margin-bottom: 8px;
-}
-
-#mathInput p, #changeInput p {
-  font-size: 16px;
-  color: #666;
-  margin-bottom: 10px;
-}
-
-#totalInput, #changeAmount {
-  font-size: 22px;
-  padding: 8px 12px;
-  border: 2px solid #F52887;
-  border-radius: 10px;
-  width: 160px;
-  text-align: center;
-  font-family: 'Comic Sans MS', cursive;
-}
-
-.submit-button {
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  padding: 10px 22px;
-  font-size: 18px;
-  border-radius: 25px;
-  cursor: pointer;
-  margin-left: 10px;
-  font-family: 'Comic Sans MS', cursive;
-  transition: transform 0.15s, background-color 0.15s;
-}
-
-.submit-button:hover {
-  background-color: #45a049;
-  transform: scale(1.04);
-}
-
-/* Feedback */
-.feedback {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
-  padding: 24px 34px;
-  border-radius: 18px;
-  font-size: 26px;
-  font-weight: bold;
-  animation: slideIn 0.25s;
-  box-shadow: 0 14px 22px rgba(0,0,0,0.25);
-}
-
-.feedback.correct {
-  background: #90EE90;
-  color: #006400;
-}
-
-.feedback.wrong {
-  background: #FFB6C6;
-  color: #8B0000;
-}
-
-@keyframes slideIn {
-  from { opacity: 0; transform: translate(-50%, -58%); }
-  to   { opacity: 1; transform: translate(-50%, -50%); }
-}
-
-/* Flying item PNG */
-.flying-item {
-  position: fixed;
-  z-index: 2000;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  filter: drop-shadow(0 10px 12px rgba(0,0,0,0.2));
-}
-
-/* Victory Screen */
-#victoryScreen {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-#victoryScreen h1 {
-  color: white;
-  font-size: 56px;
-  text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
-  margin-bottom: 30px;
-}
-
-.victory-stats {
-  background: white;
-  padding: 30px 50px;
-  border-radius: 20px;
-  margin-bottom: 30px;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-}
-
-.victory-stats p {
-  font-size: 24px;
-  margin: 10px 0;
-  color: #333;
-}
-
-#finalScore {
-  color: #F52887;
-  font-weight: bold;
-  font-size: 36px;
-}
-
-#victoryMessage {
-  color: #667eea;
-  font-style: italic;
-}
-
-.victory-buttons {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-/* Responsive */
-@media (max-width: 900px) {
-  .game-layout {
-    grid-template-columns: 1fr;
+/* =========================================================
+   Lollie's Cafe Game — game.js (complete file)
+   - Level 1 memory flow (show order ~5s then hide)
+   - Customer “walks in” (adds .enter class)
+   - No duplicate items per order (unique selection)
+   - PNG menu items (uses item.img)
+   - Serving animation: item PNG flies to customer
+   - Correct item buttons stay disabled (no double-serve)
+   - Inline onclick buttons supported (functions exposed on window)
+   ========================================================= */
+
+/* ---------------------------
+   Game State
+--------------------------- */
+let currentLevel = 1;
+let score = 0;
+
+let currentCustomer = null;
+let currentOrder = [];          // array of item objects still needed
+let fullOrderSnapshot = [];     // for display/reference without mutating
+
+let timerInterval = null;
+let timeRemaining = 0;
+
+let orderRevealTimeout = null;  // used to hide order after a delay
+
+
+/* ---------------------------
+   Game Data
+   NOTE: Put these image files where the paths point.
+   If your images are in the SAME folder as index.html, keep them like "elf-wait.png".
+   If they're inside /images, change to "images/elf-wait.png".
+--------------------------- */
+const customers = [
+  {
+    name: "Peppermint",
+    images: {
+      wait:  "elf-wait.png",
+      think: "elf-think.png",
+      happy: "elf-happy.png",
+      sad:   "elf-sad.png"
+    }
+  },
+  {
+    name: "Sugarplum",
+    images: {
+      wait:  "fairy-wait.png",
+      think: "fairy-think.png",
+      happy: "fairy-happy.png",
+      sad:   "fairy-sad.png"
+    }
+  },
+  {
+    name: "Teddy",
+    images: {
+      wait:  "pup-wait.png",
+      think: "pup-think.png",
+      happy: "pup-happy.png",
+      sad:   "pup-sad2.png"
+    }
   }
-  .header-right {
-    text-align: center;
+];
+
+// Menu items now use PNGs instead of emojis
+const items = [
+  { id: "donut",     name: "Donut",       img: "donut.png",     price: 3.50 },
+  { id: "coffee",    name: "Coffee",      img: "coffee.png",    price: 4.50 },
+  { id: "cupcake",   name: "Cupcake",     img: "cupcake.png",   price: 5.00 },
+  { id: "milkshake", name: "Milkshake",   img: "milkshake.png", price: 6.50 },
+  { id: "cookies",   name: "Cookie Bag",  img: "cookies.png",   price: 4.00 },
+  { id: "water",     name: "Water",       img: "water.png",     price: 2.50 },
+  { id: "beans",     name: "Magic Beans", img: "beans.png",     price: 7.00 }
+];
+
+const levelConfig = {
+  1: {
+    title: "Level 1: Memory Challenge",
+    description: "Remember what the customer orders!",
+    orderSize: [2, 3],
+    timer: false,
+    timeLimit: null,
+    showPrices: false,
+    mathMode: false,
+    changeMode: false,
+    ordersToWin: 5,
+    revealMs: 5000
+  },
+  2: {
+    title: "Level 2: Timed Challenge",
+    description: "Remember orders before time runs out!",
+    orderSize: [3, 4],
+    timer: true,
+    timeLimit: 45,
+    showPrices: false,
+    mathMode: false,
+    changeMode: false,
+    ordersToWin: 7,
+    revealMs: 3000
+  },
+  3: {
+    title: "Level 3: Math Challenge",
+    description: "Calculate the total cost!",
+    orderSize: [2, 4],
+    timer: false,
+    timeLimit: null,
+    showPrices: true,
+    mathMode: true,
+    changeMode: false,
+    ordersToWin: 5
+  },
+  4: {
+    title: "Level 4: Master Challenge",
+    description: "Give correct change!",
+    orderSize: [2, 3],
+    timer: false,
+    timeLimit: null,
+    showPrices: true,
+    mathMode: true,
+    changeMode: true,
+    ordersToWin: 5
+  }
+};
+
+
+/* =========================================================
+   Screen Management
+========================================================= */
+function hideAllScreens() {
+  document.querySelectorAll(".screen").forEach((screen) => {
+    screen.classList.add("hidden");
+  });
+}
+
+function showStart() {
+  hideAllScreens();
+  document.getElementById("startScreen").classList.remove("hidden");
+}
+
+function showLevelSelect() {
+  hideAllScreens();
+  document.getElementById("levelSelect").classList.remove("hidden");
+}
+
+function showGame() {
+  hideAllScreens();
+  document.getElementById("gameScreen").classList.remove("hidden");
+}
+
+function showVictory() {
+  hideAllScreens();
+  document.getElementById("victoryScreen").classList.remove("hidden");
+  document.getElementById("finalScore").textContent = score;
+
+  let message = "Amazing work!";
+  if (score >= levelConfig[currentLevel].ordersToWin) {
+    message = "Perfect! You're a cafe master! ⭐";
+  } else if (score >= levelConfig[currentLevel].ordersToWin * 0.7) {
+    message = "Great job! Keep practicing! 🌟";
+  }
+  document.getElementById("victoryMessage").textContent = message;
+
+  const nextBtn = document.getElementById("nextLevelBtn");
+  if (currentLevel < 4) nextBtn.classList.remove("hidden");
+  else nextBtn.classList.add("hidden");
+}
+
+
+/* =========================================================
+   Level Management
+========================================================= */
+function startLevel(level) {
+  currentLevel = level;
+  score = 0;
+
+  const config = levelConfig[level];
+
+  // Clean up any timers / pending reveals from previous level
+  stopTimer();
+  clearOrderRevealTimeout();
+
+  // Update header
+  document.getElementById("levelTitle").textContent = config.title;
+  document.getElementById("score").textContent = score;
+
+  // Timer UI
+  const timerDisplay = document.getElementById("timerDisplay");
+  if (config.timer) timerDisplay.classList.remove("hidden");
+  else timerDisplay.classList.add("hidden");
+
+  // Build menu for this level
+  buildMenu(config);
+
+  // Hide special UI panels (math/change)
+  document.getElementById("orderSummary").classList.add("hidden");
+  document.getElementById("mathInput").classList.add("hidden");
+  document.getElementById("changeInput").classList.add("hidden");
+  document.getElementById("totalDisplay").classList.add("hidden");
+
+  // Clear feedback
+  hideFeedback();
+
+  showGame();
+  newCustomer();
+}
+
+function nextLevel() {
+  if (currentLevel < 4) startLevel(currentLevel + 1);
+  else showLevelSelect();
+}
+
+function quitToLevelSelect() {
+  stopTimer();
+  clearOrderRevealTimeout();
+  showLevelSelect();
+}
+
+
+/* =========================================================
+   Menu Building (PNG items)
+========================================================= */
+function buildMenu(config) {
+  const menuContainer = document.getElementById("menuItems");
+  menuContainer.innerHTML = "";
+
+  items.forEach((item) => {
+    const button = document.createElement("button");
+    button.className = "menu-button";
+    button.type = "button";
+    button.onclick = () => serveItem(item.id, button);
+
+    const priceText = config.showPrices ? `$${item.price.toFixed(2)}` : "";
+
+    button.innerHTML = `
+      <img class="item-thumb" src="${item.img}" alt="${item.name}">
+      <div class="item-name">${item.name}</div>
+      ${priceText ? `<div class="item-price">${priceText}</div>` : ""}
+    `;
+
+    menuContainer.appendChild(button);
+  });
+
+  document.getElementById("counterTitle").textContent =
+    config.mathMode ? "Calculate the total!" : "What can you make?";
+}
+
+function setMenuEnabled(isEnabled) {
+  document.querySelectorAll(".menu-button").forEach((btn) => {
+    if (isEnabled) {
+      // Only re-enable if it wasn't permanently disabled by a correct serve
+      // We use the data-locked flag for "served correctly already"
+      if (btn.dataset.locked === "true") return;
+      btn.disabled = false;
+      btn.classList.remove("disabled");
+    } else {
+      btn.disabled = true;
+      btn.classList.add("disabled");
+    }
+  });
+}
+
+function lockMenuButton(buttonEl) {
+  buttonEl.dataset.locked = "true";
+  buttonEl.disabled = true;
+  buttonEl.classList.add("disabled");
+}
+
+function unlockMenuButton(buttonEl) {
+  buttonEl.dataset.locked = "false";
+  buttonEl.disabled = false;
+  buttonEl.classList.remove("disabled");
+}
+
+
+/* =========================================================
+   Customer + Order Management
+========================================================= */
+function newCustomer() {
+  const config = levelConfig[currentLevel];
+
+  stopTimer();
+  clearOrderRevealTimeout();
+  hideFeedback();
+
+  // Pick random customer
+  currentCustomer = customers[Math.floor(Math.random() * customers.length)];
+  document.getElementById("customerName").textContent = currentCustomer.name;
+
+  // Start with wait image
+  updateCustomerDisplay("wait");
+
+  // Trigger entrance animation (CSS should animate .customer.enter)
+  const customerEl = document.querySelector(".customer");
+  if (customerEl) {
+    customerEl.classList.remove("enter");
+    // Force reflow to restart animation reliably
+    void customerEl.offsetWidth;
+    customerEl.classList.add("enter");
+  }
+
+  // Generate a UNIQUE order (no duplicates)
+  const orderSize = randInt(config.orderSize[0], config.orderSize[1]);
+  const shuffled = [...items].sort(() => Math.random() - 0.5);
+  fullOrderSnapshot = shuffled.slice(0, orderSize);
+  currentOrder = [...fullOrderSnapshot]; // mutable copy for serving
+
+  // Show order
+  if (config.mathMode) {
+    // Math levels: show summary after a short beat
+    document.getElementById("customerOrder").textContent = "Let me think… 🤔";
+    setTimeout(() => updateCustomerDisplay("think"), 700);
+    setTimeout(() => showMathChallenge(), 1200);
+    // Disable menu while in math mode
+    setMenuEnabled(false);
+  } else {
+    // Memory levels (1 & 2):
+    // 1) Disable menu while order is being shown
+    setMenuEnabled(false);
+
+    // 2) Show order (as images + words)
+    showOrderInBubble(fullOrderSnapshot);
+
+    // 3) Customer switches to thinking face after a moment
+    setTimeout(() => updateCustomerDisplay("think"), 700);
+
+    // 4) Hide order after reveal time and enable menu
+    const revealMs = config.revealMs ?? 4000;
+    orderRevealTimeout = setTimeout(() => {
+      hideOrderInBubble();
+      setMenuEnabled(true);
+
+      // Optional: helpful prompt
+      document.getElementById("customerOrder").textContent =
+        "Okay… what did I order again? 🤔";
+    }, revealMs);
+  }
+
+  // Start timer if needed (Level 2)
+  if (config.timer) startTimer(config.timeLimit);
+}
+
+function showOrderInBubble(orderArr) {
+  const bubble = document.getElementById("customerOrder");
+
+  // We use innerHTML so we can show the item PNGs.
+  // If you want a cleaner look, add CSS for .order-line and .order-thumb in style.css.
+  const lines = orderArr
+    .map(
+      (it) => `
+      <span class="order-line" style="display:inline-flex;align-items:center;gap:8px;margin:6px 8px;">
+        <img class="order-thumb" src="${it.img}" alt="${it.name}" style="width:34px;height:34px;object-fit:contain;">
+        <strong>${it.name}</strong>
+      </span>`
+    )
+    .join("");
+
+  bubble.innerHTML = `
+    <div style="margin-bottom:8px;"><strong>I’d like…</strong></div>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;">${lines}</div>
+    <div style="margin-top:10px;"><em>please!</em></div>
+  `;
+}
+
+function hideOrderInBubble() {
+  const bubble = document.getElementById("customerOrder");
+  bubble.textContent = ""; // clear back to plain text
+}
+
+function updateCustomerDisplay(emotion) {
+  const img = document.getElementById("customerImage");
+  if (!img || !currentCustomer) return;
+  img.src = currentCustomer.images[emotion] || currentCustomer.images.wait;
+}
+
+
+/* =========================================================
+   Timer (Level 2)
+========================================================= */
+function startTimer(seconds) {
+  stopTimer();
+  timeRemaining = seconds;
+  document.getElementById("timer").textContent = timeRemaining;
+
+  timerInterval = setInterval(() => {
+    timeRemaining--;
+    document.getElementById("timer").textContent = timeRemaining;
+
+    if (timeRemaining <= 0) {
+      stopTimer();
+      handleTimeout();
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
   }
 }
 
-@media (max-width: 768px) {
-  #startScreen h1 { font-size: 40px; }
-  #startScreen p { font-size: 18px; }
-  .big-button { font-size: 24px; padding: 15px 30px; }
-  .customer-img { width: 160px; height: 160px; }
-  .cafe-header { flex-direction: column; text-align: center; }
-  .header-right { margin-top: 10px; }
+function handleTimeout() {
+  // On timeout, customer is sad and we move on.
+  // You can add penalties/lives later if you want.
+  updateCustomerDisplay("sad");
+  showFeedback("Time’s up! Too slow!", false);
+
+  // Re-enable menu in case we were mid-reveal
+  setMenuEnabled(true);
+
+  setTimeout(() => {
+    if (score >= levelConfig[currentLevel].ordersToWin) showVictory();
+    else newCustomer();
+  }, 1400);
 }
+
+function clearOrderRevealTimeout() {
+  if (orderRevealTimeout) {
+    clearTimeout(orderRevealTimeout);
+    orderRevealTimeout = null;
+  }
+}
+
+
+/* =========================================================
+   Serving Items (Levels 1 & 2)
+   - Fly PNG from clicked menu button to customer
+   - Then react (happy/sad)
+   - Correct item locks button disabled permanently for this round
+========================================================= */
+function serveItem(itemId, buttonEl) {
+  const config = levelConfig[currentLevel];
+  if (config.mathMode) return;            // math levels don’t serve items
+  if (!buttonEl || buttonEl.disabled) return;
+
+  const clickedItem = items.find((it) => it.id === itemId);
+  if (!clickedItem) return;
+
+  // While the item flies, temporarily disable the button to prevent spam clicks
+  buttonEl.disabled = true;
+  buttonEl.classList.add("disabled");
+
+  flyImageFromButtonToCustomer(buttonEl, clickedItem.img, clickedItem.name, () => {
+    const index = currentOrder.findIndex((orderItem) => orderItem.id === itemId);
+    const isCorrect = index !== -1;
+
+    if (isCorrect) {
+      // Remove from remaining order
+      currentOrder.splice(index, 1);
+
+      // Lock button permanently (cannot serve same item again)
+      lockMenuButton(buttonEl);
+
+      // React after item arrives
+      updateCustomerDisplay("happy");
+
+      if (currentOrder.length === 0) {
+        showFeedback("Perfect! Thank you! 😊", true, true);
+        stopTimer();
+
+        setTimeout(() => {
+          score++;
+          document.getElementById("score").textContent = score;
+
+          if (score >= levelConfig[currentLevel].ordersToWin) {
+            showVictory();
+          } else {
+            // Rebuild menu for next round (clears locks)
+            buildMenu(levelConfig[currentLevel]);
+            newCustomer();
+          }
+        }, 900);
+      } else {
+        showFeedback("Yum! What else? 😋", true, false);
+        setTimeout(() => {
+          hideFeedback();
+          updateCustomerDisplay("think");
+        }, 800);
+      }
+    } else {
+      // Wrong item: show sad, then allow them to try a different item
+      updateCustomerDisplay("sad");
+      showFeedback("Oops! That’s not right. Try again!", false, false);
+
+      setTimeout(() => {
+        hideFeedback();
+        updateCustomerDisplay("think");
+
+        // Re-enable this wrong button (it was only temporarily disabled)
+        unlockMenuButton(buttonEl);
+      }, 900);
+    }
+  });
+}
+
+
+/* =========================================================
+   Flying Item Animation (PNG)
+========================================================= */
+function flyImageFromButtonToCustomer(buttonEl, imgSrc, altText, onArrive) {
+  const start = buttonEl.getBoundingClientRect();
+  const customerImg = document.getElementById("customerImage");
+  const end = customerImg.getBoundingClientRect();
+
+  const flyer = document.createElement("img");
+  flyer.className = "flying-item";
+  flyer.src = imgSrc;
+  flyer.alt = altText;
+
+  // Default size; your CSS can override .flying-item if you prefer
+  flyer.style.width = "56px";
+  flyer.style.height = "56px";
+  flyer.style.objectFit = "contain";
+  flyer.style.position = "fixed";
+  flyer.style.zIndex = "2000";
+  flyer.style.pointerEvents = "none";
+  flyer.style.left = `${start.left + start.width / 2}px`;
+  flyer.style.top = `${start.top + start.height / 2}px`;
+  flyer.style.transform = "translate(-50%, -50%)";
+
+  document.body.appendChild(flyer);
+
+  // Web Animations API: move from button center to customer image center
+  const anim = flyer.animate(
+    [
+      {
+        left: `${start.left + start.width / 2}px`,
+        top: `${start.top + start.height / 2}px`,
+        transform: "translate(-50%, -50%) scale(1)",
+        opacity: 1
+      },
+      {
+        left: `${end.left + end.width / 2}px`,
+        top: `${end.top + end.height / 2}px`,
+        transform: "translate(-50%, -50%) scale(0.9)",
+        opacity: 1
+      }
+    ],
+    { duration: 520, easing: "ease-in-out", fill: "forwards" }
+  );
+
+  anim.onfinish = () => {
+    flyer.remove();
+    if (typeof onArrive === "function") onArrive();
+  };
+}
+
+
+/* =========================================================
+   Math Mode (Levels 3 & 4)
+========================================================= */
+function showMathChallenge() {
+  const config = levelConfig[currentLevel];
+
+  // Build order list
+  const orderList = document.getElementById("orderList");
+  orderList.innerHTML = "";
+
+  let total = 0;
+  fullOrderSnapshot.forEach((item) => {
+    total += item.price;
+
+    const row = document.createElement("div");
+    row.className = "order-item";
+    row.innerHTML = `
+      <span>${item.name}</span>
+      <span>$${item.price.toFixed(2)}</span>
+    `;
+    orderList.appendChild(row);
+  });
+
+  document.getElementById("orderSummary").classList.remove("hidden");
+
+  if (config.changeMode) {
+    // Level 4: show total and ask for change
+    document.getElementById("totalDisplay").classList.remove("hidden");
+    document.getElementById("orderTotal").textContent = total.toFixed(2);
+
+    // Make a payment that covers the bill (rounded up to nearest $5)
+    const payment = Math.ceil(total / 5) * 5;
+    document.getElementById("customerPayment").textContent = payment.toFixed(2);
+
+    document.getElementById("changeInput").classList.remove("hidden");
+    document.getElementById("mathInput").classList.add("hidden");
+
+    document.getElementById("changeAmount").value = "";
+    document.getElementById("changeAmount").focus();
+
+    document.getElementById("customerOrder").textContent =
+      `Here’s $${payment.toFixed(2)}. What’s my change?`;
+  } else {
+    // Level 3: ask for total only
+    document.getElementById("totalDisplay").classList.add("hidden");
+    document.getElementById("mathInput").classList.remove("hidden");
+    document.getElementById("changeInput").classList.add("hidden");
+
+    document.getElementById("totalInput").value = "";
+    document.getElementById("totalInput").focus();
+
+    document.getElementById("customerOrder").textContent = "How much do I owe?";
+  }
+
+  // In math mode, menu is disabled
+  setMenuEnabled(false);
+}
+
+function checkTotal() {
+  const userAnswer = parseFloat(document.getElementById("totalInput").value);
+  const correctTotal = fullOrderSnapshot.reduce((sum, item) => sum + item.price, 0);
+
+  if (Number.isNaN(userAnswer)) {
+    showFeedback("Type a number first 😊", false);
+    return;
+  }
+
+  if (Math.abs(userAnswer - correctTotal) < 0.01) {
+    handleMathCorrect();
+  } else {
+    handleMathWrong();
+  }
+}
+
+function checkChange() {
+  const userChange = parseFloat(document.getElementById("changeAmount").value);
+  const total = fullOrderSnapshot.reduce((sum, item) => sum + item.price, 0);
+  const payment = parseFloat(document.getElementById("customerPayment").textContent);
+  const correctChange = payment - total;
+
+  if (Number.isNaN(userChange)) {
+    showFeedback("Type a number first 😊", false);
+    return;
+  }
+
+  if (Math.abs(userChange - correctChange) < 0.01) {
+    handleMathCorrect();
+  } else {
+    handleMathWrong();
+  }
+}
+
+function handleMathCorrect() {
+  updateCustomerDisplay("happy");
+  showFeedback("Correct! Great maths! 🌟", true);
+
+  setTimeout(() => {
+    score++;
+    document.getElementById("score").textContent = score;
+
+    if (score >= levelConfig[currentLevel].ordersToWin) {
+      showVictory();
+    } else {
+      // Reset panels and load next customer
+      document.getElementById("orderSummary").classList.add("hidden");
+      document.getElementById("mathInput").classList.add("hidden");
+      document.getElementById("changeInput").classList.add("hidden");
+      document.getElementById("totalDisplay").classList.add("hidden");
+
+      buildMenu(levelConfig[currentLevel]);
+      newCustomer();
+    }
+  }, 1100);
+}
+
+function handleMathWrong() {
+  updateCustomerDisplay("sad");
+  showFeedback("Not quite — try again!", false);
+}
+
+
+/* =========================================================
+   Feedback helpers
+========================================================= */
+function showFeedback(message, isCorrect, autoClear = true) {
+  const el = document.getElementById("feedback");
+  el.textContent = message;
+  el.className = `feedback ${isCorrect ? "correct" : "wrong"}`;
+  el.classList.remove("hidden");
+
+  if (autoClear) {
+    setTimeout(() => el.classList.add("hidden"), 1200);
+  }
+}
+
+function hideFeedback() {
+  const el = document.getElementById("feedback");
+  el.classList.add("hidden");
+}
+
+
+/* =========================================================
+   Utilities
+========================================================= */
+function randInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+
+/* =========================================================
+   Keyboard support (Enter submits for math inputs)
+========================================================= */
+document.addEventListener("DOMContentLoaded", () => {
+  const totalInput = document.getElementById("totalInput");
+  const changeAmount = document.getElementById("changeAmount");
+
+  if (totalInput) {
+    totalInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") checkTotal();
+    });
+  }
+
+  if (changeAmount) {
+    changeAmount.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") checkChange();
+    });
+  }
+});
+
+
+/* =========================================================
+   Make functions available to inline onclick handlers
+   (your HTML uses onclick="showLevelSelect()" etc.)
+========================================================= */
+window.showLevelSelect = showLevelSelect;
+window.showStart = showStart;
+window.startLevel = startLevel;
+window.quitToLevelSelect = quitToLevelSelect;
+window.nextLevel = nextLevel;
+window.checkTotal = checkTotal;
+window.checkChange = checkChange;
