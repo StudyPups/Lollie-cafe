@@ -1,12 +1,12 @@
 h1 {
-  color: darkhotpink; 
+  color: #F52887; 
   font-size: 60px;
   text-align: center;
 }
 p {
   text-align: center;
   font-size: 24px;
-  color: watermelonpink;
+  color: #FC6C85;
 }
 body {
   background-color: lightblue;
@@ -17,6 +17,6 @@ button {
   color: white;
   font-size: 30px;
   padding: 20px 40px;
-  border: 2px solid darkhotpink;
+  border: 2px solid #04AA6D;
   border-radius: 50px;
 }
