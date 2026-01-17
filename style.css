@@ -1,21 +1,22 @@
 h1 {
-  color: pink;
+  color: DA1884; 
   font-size: 60px;
   text-align: center;
 }
 p {
   text-align: center;
   font-size: 24px;
-  color: grey;
+  color: E7A1B0;
 }
 body {
   background-color: lightblue;
 }
 button {
+  text-align: center;
   background-color: hotpink;
   color: white;
   font-size: 30px;
   padding: 20px 40px;
-  border: none;
+  border: 2px solid F52887;
   border-radius: 50px;
 }
