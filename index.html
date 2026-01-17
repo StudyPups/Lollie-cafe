@@ -1,128 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lollie's Cafe Game</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="game.js?v=2" defer></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lollie's Cafe Game</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="game.js?v=3" defer></script>
 </head>
+
 <body>
-    <!-- Start Screen -->
-    <div id="startScreen" class="screen">
-        <h1>Welcome To Lollie's Cafe</h1>
-        <p>Can you get all the orders right in Lollie's cafe?</p>
-        <button onclick="showLevelSelect()" class="big-button">Start Game!</button>
-    </div>
+  <!-- Start Screen -->
+  <div id="startScreen" class="screen">
+    <h1>Welcome To Lollie's Cafe</h1>
+    <p>Can you get all the orders right in Lollie's cafe?</p>
+    <button onclick="showLevelSelect()" class="big-button" type="button">Start Game!</button>
+  </div>
 
-    <!-- Level Select Screen -->
-    <div id="levelSelect" class="screen hidden">
-        <h1>Choose Your Level</h1>
-        <div class="level-buttons">
-            <button onclick="startLevel(1)" class="level-button">
-                <h3>Level 1</h3>
-                <p>Memory Challenge</p>
-                <p class="level-desc">Remember customer orders</p>
-            </button>
-            <button onclick="startLevel(2)" class="level-button">
-                <h3>Level 2</h3>
-                <p>Timed Challenge</p>
-                <p class="level-desc">Beat the clock!</p>
-            </button>
-            <button onclick="startLevel(3)" class="level-button">
-                <h3>Level 3</h3>
-                <p>Math Challenge</p>
-                <p class="level-desc">Calculate totals</p>
-            </button>
-            <button onclick="startLevel(4)" class="level-button">
-                <h3>Level 4</h3>
-                <p>Master Challenge</p>
-                <p class="level-desc">Give correct change!</p>
-            </button>
-        </div>
-        <button onclick="showStart()" class="back-button">← Back</button>
-    </div>
+  <!-- Level Select Screen -->
+  <div id="levelSelect" class="screen hidden">
+    <h1>Choose Your Level</h1>
+    <div class="level-buttons">
+      <button onclick="startLevel(1)" class="level-button" type="button">
+        <h3>Level 1</h3>
+        <p>Memory Challenge</p>
+        <p class="level-desc">Remember customer orders</p>
+      </button>
 
-    <!-- Game Screen -->
-    <div id="gameScreen" class="screen hidden">
-        <!-- Background -->
-        <div class="cafe-background"></div>
-        
-        <!-- Game Header -->
-        <div class="cafe-header">
-            <div class="header-left">
-                <h2>🌸 Lollie's Cafe 🌸</h2>
-                <p id="levelTitle">Level 1: Memory Challenge</p>
-            </div>
-            <div class="header-right">
-                <p>Score: <span id="score">0</span></p>
-                <p id="timerDisplay" class="hidden">Time: <span id="timer">60</span>s</p>
-            </div>
-        </div>
+      <button onclick="startLevel(2)" class="level-button" type="button">
+        <h3>Level 2</h3>
+        <p>Timed Challenge</p>
+        <p class="level-desc">Beat the clock!</p>
+      </button>
 
-              <div class="game-layout">
-  <!-- Menu/Items Area (LEFT) -->
-        <div class="counter">
-            <h3 id="counterTitle">What can you make?</h3>
-            <div id="menuItems" class="menu-items">
-                <!-- Items will be added by JavaScript -->
-            </div>
-
-             <!-- Customer Area (RIGHT) -->
-        <div class="customer-area">
-            <div class="customer">
-                <img id="customerImage" src="elf-wait.png" alt="Customer" class="customer-img">
-                <h3 id="customerName">Peppermint</h3>
-                <div class="speech-bubble">
-                    <p id="customerOrder">Welcome to the cafe!</p>
-                </div>
-            </div>
-        </div>
-            
-            <!-- Level 3/4: Order Summary -->
-            <div id="orderSummary" class="order-summary hidden">
-                <h4>Customer's Order:</h4>
-                <div id="orderList"></div>
-                <div id="totalDisplay" class="hidden">
-                    <strong>Total: $<span id="orderTotal">0.00</span></strong>
-                </div>
-            </div>
-
-            <!-- Level 3: Answer Input -->
-            <div id="mathInput" class="hidden">
-                <label>Enter the total: $</label>
-                <input type="number" id="totalInput" step="0.01" min="0">
-                <button onclick="checkTotal()" class="submit-button">Submit</button>
-            </div>
-
-            <!-- Level 4: Change Making -->
-            <div id="changeInput" class="hidden">
-                <p>Customer pays: $<span id="customerPayment">0.00</span></p>
-                <label>Give change: $</label>
-                <input type="number" id="changeAmount" step="0.01" min="0">
-                <button onclick="checkChange()" class="submit-button">Give Change</button>
-            </div>
-        </div>
-
-        <!-- Feedback Area -->
-        <div id="feedback" class="feedback hidden"></div>
-
-        <!-- Back Button -->
-        <button onclick="quitToLevelSelect()" class="quit-button">Quit Level</button>
-    </div>
-
-    <!-- Victory Screen -->
-    <div id="victoryScreen" class="screen hidden">
-        <h1>🎉 Level Complete! 🎉</h1>
-        <div class="victory-stats">
-            <p>Final Score: <span id="finalScore">0</span></p>
-            <p id="victoryMessage">Amazing work!</p>
-        </div>
-        <div class="victory-buttons">
-            <button onclick="nextLevel()" id="nextLevelBtn" class="big-button">Next Level →</button>
-            <button onclick="showLevelSelect()" class="big-button secondary">Level Select</button>
-        </div>
-    </div>
-
-    </body>
-</html>
+      <button onclick="startLevel(3)" class="level-button" type="button">
+        <h3>Level 3</h3>
