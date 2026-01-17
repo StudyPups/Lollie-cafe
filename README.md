@@ -20,9 +20,8 @@ I learned how to code! I made this using:
 
 ## Try it out!
 
-**Play my game here:** [Click to play!](https://username.github.io/repository-name)
+**Play my game here:** [Click to play!][https://studypups.github.io/Lollie-cafe/)]
 
-*(Mum will help me add the real link!)*
 
 ## About me
 
