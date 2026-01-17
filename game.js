@@ -27,9 +27,7 @@ let orderRevealTimeout = null;  // used to hide order after a delay
 
 /* ---------------------------
    Game Data
-   NOTE: Put these image files where the paths point.
-   If your images are in the SAME folder as index.html, keep them like "elf-wait.png".
-   If they're inside /images, change to "images/elf-wait.png".
+ 
 --------------------------- */
 const customers = [
   {
