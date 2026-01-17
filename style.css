@@ -556,6 +556,54 @@ body {
   }
 }
 
+/* Make order summary more compact */
+.order-summary {
+  padding: 8px 10px; /* reduce from 12px */
+  margin-top: 8px;
+  font-size: 14px; /* slightly smaller text */
+}
+
+.order-summary h4 {
+  margin: 0 0 6px 0; /* tighter spacing */
+  font-size: 16px;
+}
+
+.order-item {
+  padding: 3px 0; /* was 5px */
+  font-size: 14px;
+}
+
+/* Make math input more compact */
+#mathInput {
+  padding: 10px; /* reduce from 14px */
+  margin-top: 8px;
+}
+
+#mathInput label {
+  font-size: 16px; /* slightly smaller */
+  margin-bottom: 6px;
+}
+
+#totalInput {
+  font-size: 20px; /* slightly smaller */
+  padding: 6px 10px;
+  width: 140px;
+}
+
+/* Tighten up the menu grid too */
+.menu-items {
+  gap: 10px; /* was 12px */
+}
+
+.menu-button {
+  padding: 10px 8px; /* was 12px 10px */
+}
+
+.item-thumb {
+  width: 48px; /* slightly smaller */
+  height: 48px;
+}
+
 @media (max-width: 768px) {
   #startScreen h1 { font-size: 40px; }
   #startScreen p { font-size: 18px; }
