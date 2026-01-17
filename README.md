@@ -20,7 +20,7 @@ I learned how to code! I made this using:
 
 ## Try it out!
 
-**Play my game here:** [Click to play!]
+**Play my game here:** [Click to play!](https://StudyPups.github.io/Lollie-cafe)
 
 
 ## About me
