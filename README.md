@@ -1,4 +1,4 @@
-# 🌸 Loli's Cafe Game 🌸
+# 🌸 Lollie's Cafe Game 🌸
 
 ## What is this?
 
@@ -26,13 +26,14 @@ I learned how to code! I made this using:
 ## About me
 
 I'm 10 years old and this is my first coding project! 
-
-I like:
-- Baking 🍪
+' Baking 🍪
 - Dogs 🐕
-- Makeup and fashion 💄
+- Makeup sikncare and fashion 💄
 - Driving games 🚗
-
+- cats
+- games like UNO!
+- music
+- creaing games like Lollie's cafe 
 ## Credits
 
 Made with love by Loli and Mum 💕
