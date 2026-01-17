@@ -537,5 +537,85 @@ body {
     .header-right {
         text-align: center;
         margin-top: 10px;
+
+       /* --- GAME LAYOUT UPGRADE (no scroll) --- */
+#gameScreen {
+  min-height: 100vh;
+  justify-content: flex-start; /* override .screen centering */
+}
+
+.game-layout {
+  position: relative;
+  z-index: 10;
+  width: min(1100px, 96vw);
+  margin: 16px auto 90px auto;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr; /* menu left, customer right */
+  gap: 16px;
+  align-items: start;
+}
+
+/* Make the counter + customer panels lighter */
+.customer-area,
+.counter {
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+  border-radius: 18px;
+}
+
+.counter {
+  padding: 16px;
+  margin: 0;              /* remove big bottom margin */
+}
+
+.counter h3 {
+  color: #F52887;         /* match theme */
+}
+
+.menu-items {
+  margin-bottom: 0;
+}
+
+/* Customer entrance animation */
+.customer {
+  position: relative;
+  transform: translateX(120%);  /* start off-screen right */
+  opacity: 0;
+}
+
+.customer.enter {
+  animation: customerEnter 0.8s ease-out forwards;
+}
+
+@keyframes customerEnter {
+  to {
+    transform: translateX(0);  /* standing position */
+    opacity: 1;
+  }
+}
+
+/* Bubble style lighter (less boxy) */
+.speech-bubble {
+  background: rgba(255, 249, 196, 0.95);
+  border: 2px solid rgba(255, 215, 0, 0.8);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+}
+
+/* Flying item animation */
+.flying-item {
+  position: fixed;
+  z-index: 2000;
+  font-size: 40px;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+/* Responsive: stack on small screens but keep everything visible */
+@media (max-width: 900px) {
+  .game-layout {
+    grid-template-columns: 1fr;
+  }
+}
+ 
     }
 }
