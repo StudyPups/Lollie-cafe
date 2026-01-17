@@ -1,13 +1,59 @@
 <!DOCTYPE html>
-<html> 
+<html lang="en">
 <head>
-  <title>Lollie's Cafe Game</title>
-  <link rel="stylesheet" href="style.css"> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lollie's Cafe Game</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Welcome To Lollie's Cafe </h1>
-<p> Can you get all the orders right? in Lollie's cafe  </p>
- <button> Start Game! </button> 
+    <!-- Start Screen (the one she made!) -->
+    <div id="startScreen" class="screen">
+        <h1>Welcome To Lollie's Cafe</h1>
+        <p>Can you get all the orders right? in Lollie's cafe</p>
+        <button onclick="startGame()" class="big-button">Start Game!</button>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="gameScreen" class="screen hidden">
+        <div class="cafe-header">
+            <h2>🌸 Lollie's Cafe 🌸</h2>
+            <p>Orders Completed: <span id="score">0</span></p>
+        </div>
+
+        <!-- Customer Area -->
+        <div class="customer-area">
+            <div class="customer">
+                <h3 id="customerName">...</h3>
+                <div class="speech-bubble">
+                    <p id="customerOrder">Welcome to the cafe!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu/Counter Area -->
+        <div class="counter">
+            <h3>What can you make?</h3>
+            <div class="menu-items">
+                <button onclick="serveTreat('cookie')" class="menu-button">
+                    🍪 Cookie
+                </button>
+                <button onclick="serveTreat('cupcake')" class="menu-button">
+                    🧁 Cupcake
+                </button>
+                <button onclick="serveTreat('coffee')" class="menu-button">
+                    ☕ Coffee
+                </button>
+                <button onclick="serveTreat('juice')" class="menu-button">
+                    🧃 Juice
+                </button>
+            </div>
+        </div>
+
+        <!-- Feedback Area -->
+        <div id="feedback" class="feedback hidden"></div>
+    </div>
+
+    <script src="game.js"></script>
 </body>
 </html>
-
