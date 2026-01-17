@@ -338,4 +338,230 @@ body {
   display: inline-block;
   min-width: 260px;
   max-width: 520px;
-  box-shadow: 0 10px 16px rgba
+  box-shadow: 0 10px 16px rgba(0,0,0,0.12);
+}
+
+.speech-bubble::before {
+  content: '';
+  position: absolute;
+  bottom: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 16px solid transparent;
+  border-right: 16px solid transparent;
+  border-top: 16px solid rgba(255, 215, 0, 0.8);
+}
+
+.speech-bubble p {
+  margin: 0;
+  font-size: 17px;
+  color: #333;
+  line-height: 1.35;
+}
+
+.bubble-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.bubble-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.75);
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.bubble-thumb {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+
+/* Order Summary / Math */
+.order-summary {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 12px;
+  border-radius: 12px;
+  margin-top: 12px;
+}
+
+.order-summary h4 {
+  margin: 0 0 8px 0;
+  color: #F52887;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+#totalDisplay {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 2px solid rgba(245, 40, 135, 0.55);
+  font-size: 18px;
+  text-align: right;
+}
+
+#mathInput, #changeInput {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 14px;
+  border-radius: 12px;
+  text-align: center;
+  margin-top: 12px;
+}
+
+#mathInput label, #changeInput label {
+  font-size: 18px;
+  color: #333;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 8px;
+}
+
+#mathInput p, #changeInput p {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+#totalInput, #changeAmount {
+  font-size: 22px;
+  padding: 8px 12px;
+  border: 2px solid #F52887;
+  border-radius: 10px;
+  width: 160px;
+  text-align: center;
+  font-family: 'Comic Sans MS', cursive;
+}
+
+.submit-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 22px;
+  font-size: 18px;
+  border-radius: 25px;
+  cursor: pointer;
+  margin-left: 10px;
+  font-family: 'Comic Sans MS', cursive;
+  transition: transform 0.15s, background-color 0.15s;
+}
+
+.submit-button:hover {
+  background-color: #45a049;
+  transform: scale(1.04);
+}
+
+/* Feedback */
+.feedback {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  padding: 24px 34px;
+  border-radius: 18px;
+  font-size: 26px;
+  font-weight: bold;
+  animation: slideIn 0.25s;
+  box-shadow: 0 14px 22px rgba(0,0,0,0.25);
+}
+
+.feedback.correct {
+  background: #90EE90;
+  color: #006400;
+}
+
+.feedback.wrong {
+  background: #FFB6C6;
+  color: #8B0000;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translate(-50%, -58%); }
+  to   { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+/* Flying item PNG */
+.flying-item {
+  position: fixed;
+  z-index: 2000;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 10px 12px rgba(0,0,0,0.2));
+}
+
+/* Victory Screen */
+#victoryScreen {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+#victoryScreen h1 {
+  color: white;
+  font-size: 56px;
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+  margin-bottom: 30px;
+}
+
+.victory-stats {
+  background: white;
+  padding: 30px 50px;
+  border-radius: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.victory-stats p {
+  font-size: 24px;
+  margin: 10px 0;
+  color: #333;
+}
+
+#finalScore {
+  color: #F52887;
+  font-weight: bold;
+  font-size: 36px;
+}
+
+#victoryMessage {
+  color: #667eea;
+  font-style: italic;
+}
+
+.victory-buttons {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .game-layout {
+    grid-template-columns: 1fr;
+  }
+  .header-right {
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  #startScreen h1 { font-size: 40px; }
+  #startScreen p { font-size: 18px; }
+  .big-button { font-size: 24px; padding: 15px 30px; }
+  .customer-img { width: 160px; height: 160px; }
+  .cafe-header { flex-direction: column; text-align: center; }
+  .header-right { margin-top: 10px; }
+}
+
