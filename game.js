@@ -480,3 +480,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+ 
