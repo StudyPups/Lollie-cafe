@@ -1,25 +1,28 @@
-/* Make everything look pretty! */
+/* Base Styles */
 body {
     margin: 0;
-    padding: 20px;
+    padding: 0;
     font-family: 'Comic Sans MS', cursive, sans-serif;
-    background-color: #D462FF;
+    background: linear-gradient(to bottom, #fff5f5, #ffe4e4);
     min-height: 100vh;
-    text-align: center;
+    overflow-x: hidden;
 }
 
-/* Screens */
+/* Screen Management */
 .screen {
-    max-width: 600px;
-    margin: 0 auto;
-    text-align: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
-/* Start Screen - Using Lollie's designs! */
+/* Start Screen */
 #startScreen h1 {
     color: #F52887;
     font-size: 60px;
@@ -32,10 +35,10 @@ body {
     text-align: center;
     font-size: 24px;
     color: #E30B5D;
-    margin: 10px 0;
+    margin: 10px 0 30px 0;
 }
 
-/* Lollie's Start Button */
+/* Buttons */
 .big-button {
     background-color: hotpink;
     color: white;
@@ -44,9 +47,9 @@ body {
     font-size: 30px;
     border-radius: 50px;
     cursor: pointer;
-    margin-top: 30px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.2);
     font-family: 'Comic Sans MS', cursive;
+    transition: all 0.3s;
 }
 
 .big-button:hover {
@@ -55,38 +58,178 @@ body {
     background-color: #FF1493;
 }
 
-/* Game Screen */
-.cafe-header {
-    background: white;
-    padding: 15px;
-    border-radius: 15px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.big-button.secondary {
+    background-color: #9370DB;
+    border-color: #DDA0DD;
 }
 
-.cafe-header h2 {
+.back-button, .quit-button {
+    background-color: #888;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 18px;
+    border-radius: 25px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-family: 'Comic Sans MS', cursive;
+}
+
+.back-button:hover, .quit-button:hover {
+    background-color: #666;
+}
+
+.quit-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+}
+
+/* Level Select */
+#levelSelect {
+    background: #D462FF;
+}
+
+#levelSelect h1 {
+    color: white;
+    font-size: 48px;
+    margin-bottom: 40px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.level-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    max-width: 900px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.level-button {
+    background: white;
+    border: 4px solid #F52887;
+    border-radius: 20px;
+    padding: 30px 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Comic Sans MS', cursive;
+}
+
+.level-button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    border-color: #FF1493;
+}
+
+.level-button h3 {
+    margin: 0 0 10px 0;
+    color: #F52887;
+    font-size: 28px;
+}
+
+.level-button p {
+    margin: 5px 0;
+    color: #666;
+    font-size: 18px;
+}
+
+.level-button .level-desc {
+    font-size: 14px;
+    color: #999;
+    font-style: italic;
+}
+
+/* Game Screen */
+#gameScreen {
+    position: relative;
+    padding: 0;
+    background: #D462FF;
+}
+
+.cafe-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('images/background.png');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.3;
+    z-index: 0;
+}
+
+/* Game Header */
+.cafe-header {
+    position: relative;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 15px 30px;
+    width: 100%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left h2 {
     margin: 0;
     color: #F52887;
+    font-size: 32px;
 }
 
-.cafe-header p {
-    color: #E30B5D;
-    font-size: 18px;
+.header-left p {
+    margin: 5px 0 0 0;
+    color: #666;
+    font-size: 16px;
+}
+
+.header-right {
+    text-align: right;
+}
+
+.header-right p {
+    margin: 5px 0;
+    font-size: 20px;
+    color: #333;
 }
 
 #score {
     font-weight: bold;
     color: #F52887;
+    font-size: 28px;
+}
+
+#timer {
+    font-weight: bold;
+    color: #FF6347;
     font-size: 24px;
 }
 
 /* Customer Area */
 .customer-area {
-    background: white;
+    position: relative;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.95);
     padding: 30px;
-    border-radius: 15px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin: 20px auto;
+    border-radius: 20px;
+    max-width: 600px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.customer {
+    text-align: center;
+}
+
+.customer-img {
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+    margin-bottom: 15px;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
 }
 
 .customer h3 {
@@ -103,60 +246,197 @@ body {
     position: relative;
     display: inline-block;
     min-width: 300px;
+    max-width: 500px;
+}
+
+.speech-bubble::before {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 20px solid #ffd700;
 }
 
 .speech-bubble p {
     margin: 0;
-    font-size: 20px;
+    font-size: 18px;
     color: #333;
+    line-height: 1.4;
 }
 
 /* Counter/Menu Area */
 .counter {
-    background: #8B4513;
+    position: relative;
+    z-index: 10;
+    background: rgba(139, 69, 19, 0.95);
     padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    margin: 0 auto 80px auto;
+    border-radius: 20px;
+    max-width: 800px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 .counter h3 {
     color: white;
     margin-top: 0;
+    text-align: center;
+    font-size: 24px;
 }
 
 .menu-items {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 15px;
-    justify-content: center;
-    flex-wrap: wrap;
+    margin-bottom: 20px;
 }
 
 .menu-button {
     background: white;
     border: 3px solid #F52887;
-    padding: 15px 25px;
-    font-size: 20px;
+    padding: 15px;
+    font-size: 16px;
     border-radius: 15px;
     cursor: pointer;
     font-family: 'Comic Sans MS', cursive;
     transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
 }
 
 .menu-button:hover {
     background: #F52887;
     color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.menu-button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.menu-button.disabled:hover {
+    transform: none;
+    background: white;
+    color: #333;
+}
+
+.item-emoji {
+    font-size: 36px;
+}
+
+.item-name {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.item-price {
+    font-size: 12px;
+    color: #666;
+}
+
+/* Order Summary */
+.order-summary {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.order-summary h4 {
+    margin-top: 0;
+    color: #F52887;
+}
+
+#orderList {
+    margin: 10px 0;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+#totalDisplay {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 2px solid #F52887;
+    font-size: 20px;
+    text-align: right;
+}
+
+/* Input Areas */
+#mathInput, #changeInput {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+#mathInput label, #changeInput label {
+    font-size: 20px;
+    color: #333;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 10px;
+}
+
+#mathInput p, #changeInput p {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+#totalInput, #changeAmount {
+    font-size: 24px;
+    padding: 10px 15px;
+    border: 2px solid #F52887;
+    border-radius: 10px;
+    width: 150px;
+    text-align: center;
+    font-family: 'Comic Sans MS', cursive;
+}
+
+.submit-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    margin-left: 10px;
+    font-family: 'Comic Sans MS', cursive;
+    transition: all 0.3s;
+}
+
+.submit-button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
 }
 
 /* Feedback Messages */
 .feedback {
-    margin-top: 20px;
-    padding: 20px;
-    border-radius: 15px;
-    font-size: 24px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    padding: 30px 50px;
+    border-radius: 20px;
+    font-size: 28px;
     font-weight: bold;
     animation: slideIn 0.3s;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
 }
 
 .feedback.correct {
@@ -172,10 +452,90 @@ body {
 @keyframes slideIn {
     from {
         opacity: 0;
-        transform: translateY(-20px);
+        transform: translate(-50%, -60%);
     }
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* Victory Screen */
+#victoryScreen {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+#victoryScreen h1 {
+    color: white;
+    font-size: 56px;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+    margin-bottom: 30px;
+}
+
+.victory-stats {
+    background: white;
+    padding: 30px 50px;
+    border-radius: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.victory-stats p {
+    font-size: 24px;
+    margin: 10px 0;
+    color: #333;
+}
+
+#finalScore {
+    color: #F52887;
+    font-weight: bold;
+    font-size: 36px;
+}
+
+#victoryMessage {
+    color: #667eea;
+    font-style: italic;
+}
+
+.victory-buttons {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #startScreen h1 {
+        font-size: 40px;
+    }
+    
+    #startScreen p {
+        font-size: 18px;
+    }
+    
+    .big-button {
+        font-size: 24px;
+        padding: 15px 30px;
+    }
+    
+    .customer-img {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .menu-items {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 10px;
+    }
+    
+    .cafe-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .header-right {
+        text-align: center;
+        margin-top: 10px;
     }
 }
