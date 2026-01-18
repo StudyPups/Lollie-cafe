@@ -223,7 +223,7 @@ body {
 /* Panels - softer, less “boxy” */
 .counter,
 .customer-area {
-  background: rgba(255, 255, 255, 0.90);
+  background: transparent;
   border-radius: 18px;
   box-shadow: 0 10px 20px rgba(0,0,0,0.12);
   overflow: hidden;
