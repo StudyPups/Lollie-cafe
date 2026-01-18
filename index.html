@@ -64,18 +64,10 @@
       </div>
     </div>
 
-    <!-- 2-column layout -->
-    <div class="game-layout">
-      <!-- LEFT: Menu/Items -->
-```html
-<div class="counter">
-  <h3 id="counterTitle">Today's Menu</h3>
-  <!-- NEW: Item Hunt Scene (for Level 1) -->
-  <div id="itemHuntContainer" class="hidden">
+   <div class="game-layout">
+  <!-- NEW: Item Hunt Overlay (OUTSIDE the counter, covers whole screen) -->
+  <div id="itemHuntContainer" class="hidden item-hunt-overlay">
     <div class="item-hunt-scene">
-      <div class="hunt-instructions" id="huntInstructions">
-        🔍 Find and click the items!
-      </div>
       
       <img src="donut.png" alt="Donut" class="hidden-item" 
            data-item="donut" onclick="serveItemHunt('donut', this)">
@@ -99,7 +91,11 @@
            data-item="beans" onclick="serveItemHunt('beans', this)">
     </div>
   </div>
-  
+      
+     !-- LEFT: Menu (for Levels 2-4) -->
+  <div class="counter">
+    <h3 id="counterTitle">Today's Menu</h3>
+    <div id="menuItems" class="menu-items"></div>
   <div id="menuItems" class="menu-items"></div>
   
         <!-- Level 3/4: Order Summary -->
@@ -128,7 +124,7 @@
       </div>
 
       <!-- RIGHT: Customer -->
-      <div class="customer-area">
+      <div class="customer-area" id="customerArea">
         <div class="customer">
           <img id="customerImage" src="elf-wait.png" alt="Customer" class="customer-img" />
           <h3 id="customerName">Peppermint</h3>
