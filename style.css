@@ -672,40 +672,40 @@ body {
 /* New positions - spread across the WHOLE cafe scene */
 /* Left side items */
 .hidden-item[data-item="coffee"] {
-  top: 25%;
-  left: 8%;
+  top: 24%;
+  left: 21%;
 }
 
 .hidden-item[data-item="cookies"] {
-  top: 18%;
-  left: 18%;
+  top: 47%;
+  left: 39%;
 }
 
 /* Center items */
 .hidden-item[data-item="donut"] {
-  top: 45%;
-  left: 28%;
+  top: 55%;
+  left: 30%;
 }
 
 .hidden-item[data-item="cupcake"] {
-  top: 52%;
-  left: 35%;
+  top: 38%;
+  left: 33%;
 }
 
 .hidden-item[data-item="water"] {
-  top: 30%;
-  left: 42%;
+  top: 50%;
+  left: 12%;
 }
 
 /* Right side items */
 .hidden-item[data-item="milkshake"] {
-  top: 58%;
-  left: 68%;
+  top: 48%;
+  left: 22%;
 }
 
 .hidden-item[data-item="beans"] {
-  top: 22%;
-  left: 78%;
+  top: 35%;
+  left: 25%;
 }
 
 /* Customer area modifications for Level 1 */
