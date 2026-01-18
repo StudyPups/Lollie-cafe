@@ -620,15 +620,7 @@ body {
 .item-hunt-scene {
   position: relative;
   width: 100%;
-  max-width: 1300px;
-  margin: 0 auto;
-  aspect-ratio: 16 / 9;
-  background-image: url('background.png');
-  background-size: cover;
-  background-position: center;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  height: 100%;
 }
 
 /* Hidden Items (clickable) */
