@@ -144,7 +144,7 @@ body {
 #gameScreen {
   position: relative;
   padding: 0;
-  background: #transparent;
+
   justify-content: flex-start; /* override .screen centering */
 }
 
@@ -313,8 +313,8 @@ body {
 }
 
 .customer-img {
-  width: 250px;
-  height: 250px;
+  width: 400px;
+  height: 400px;
   object-fit: contain;
   margin-bottom: 10px;
   filter: drop-shadow(0 6px 10px rgba(0,0,0,0.14));
@@ -672,40 +672,40 @@ body {
 /* New positions - spread across the WHOLE cafe scene */
 /* Left side items */
 .hidden-item[data-item="coffee"] {
-  top: 24%;
-  left: 21%;
+  top: 37%;
+  left: 17.5%;
 }
 
 .hidden-item[data-item="cookies"] {
-  top: 47%;
-  left: 39%;
+  top: 54.5%;
+  left: 53%;
 }
 
 /* Center items */
 .hidden-item[data-item="donut"] {
-  top: 55%;
-  left: 30%;
+  top: 56%;
+  left: 26%;
 }
 
 .hidden-item[data-item="cupcake"] {
-  top: 38%;
-  left: 33%;
+  top: 48%;
+  left: 32.5%;
 }
 
 .hidden-item[data-item="water"] {
-  top: 50%;
-  left: 12%;
+  top: 56%;
+  left: 10%;
 }
 
 /* Right side items */
 .hidden-item[data-item="milkshake"] {
-  top: 48%;
-  left: 22%;
+  top: 31%;
+  left: 39%;
 }
 
 .hidden-item[data-item="beans"] {
-  top: 35%;
-  left: 25%;
+  top: 22%;
+  left: 32%;
 }
 
 /* Customer area modifications for Level 1 */
