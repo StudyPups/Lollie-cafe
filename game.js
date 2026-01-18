@@ -185,8 +185,13 @@ function startLevel(level) {
   if (config.timer) timerDisplay.classList.remove("hidden");
   else timerDisplay.classList.add("hidden");
 
-  // Build menu for this level
+ // Setup the appropriate menu for this level
+setupLevelMenu(level);
+
+// Build regular menu for levels 2-4
+if (level > 1) {
   buildMenu(config);
+}
 
   // Hide special UI panels (math/change)
   document.getElementById("orderSummary").classList.add("hidden");
@@ -723,4 +728,106 @@ window.startLevel = startLevel;
 window.quitToLevelSelect = quitToLevelSelect;
 window.nextLevel = nextLevel;
 window.checkTotal = checkTotal;
+
+/* ============================================
+   LEVEL 1: ITEM HUNT FUNCTIONS
+   ============================================ */
+
+// Show/hide the appropriate menu based on level
+function setupLevelMenu(levelNum) {
+  const itemHunt = document.getElementById('itemHuntContainer');
+  const menuItems = document.getElementById('menuItems');
+  
+  if (levelNum === 1) {
+    // Level 1: Item Hunt Mode
+    itemHunt.classList.remove('hidden');
+    menuItems.classList.add('hidden');
+    
+    // Reset all items to be visible and clickable
+    document.querySelectorAll('.hidden-item').forEach(item => {
+      item.classList.remove('found');
+    });
+    
+    // Hide instructions after 3 seconds
+    setTimeout(() => {
+      const instructions = document.getElementById('huntInstructions');
+      if (instructions) {
+        instructions.style.opacity = '0';
+        instructions.style.transition = 'opacity 0.5s';
+        setTimeout(() => instructions.style.display = 'none', 500);
+      }
+    }, 3000);
+    
+  } else {
+    // Levels 2-4: Regular Grid Menu
+    itemHunt.classList.add('hidden');
+    menuItems.classList.remove('hidden');
+  }
+}
+
+// Modified serve function for item hunt mode
+function serveItemHunt(itemId, buttonEl) {
+  const config = levelConfig[currentLevel];
+  
+  // Check if this item is in the current order
+  const index = currentOrder.findIndex((orderItem) => orderItem.id === itemId);
+  const isCorrect = index !== -1;
+  
+  if (isCorrect) {
+    // Mark item as found visually
+    buttonEl.classList.add('found');
+    
+    // Remove from remaining order
+    currentOrder.splice(index, 1);
+    
+    // Fly the item to customer
+    const clickedItem = items.find((it) => it.id === itemId);
+    flyImageFromButtonToCustomer(buttonEl, clickedItem.img, clickedItem.name, () => {
+      updateCustomerDisplay("happy");
+      
+      if (currentOrder.length === 0) {
+        // All items found!
+        showFeedback("Perfect! Thank you! 😊", true);
+        stopTimer();
+        
+        setTimeout(() => {
+          score++;
+          document.getElementById("score").textContent = score;
+          
+          if (score >= config.ordersToWin) {
+            showVictory();
+          } else {
+            // Reset for next round
+            setupLevelMenu(1);
+            newCustomer();
+          }
+        }, 1200);
+      } else {
+        // More items to find
+        showFeedback("Great! Keep looking! 🔍", true, false);
+        setTimeout(() => {
+          hideFeedback();
+          updateCustomerDisplay("think");
+        }, 800);
+      }
+    });
+    
+  } else {
+    // Wrong item clicked
+    updateCustomerDisplay("sad");
+    showFeedback("That's not what I ordered! 🤔", false);
+    
+    // Shake animation for wrong item
+    buttonEl.style.animation = 'shake 0.5s';
+    setTimeout(() => {
+      buttonEl.style.animation = '';
+      updateCustomerDisplay("think");
+      hideFeedback();
+    }, 600);
+  }
+}
+
+// Expose to global scope for onclick handlers
+window.serveItemHunt = serveItemHunt;
+```
 window.checkChange = checkChange;
