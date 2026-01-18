@@ -220,16 +220,11 @@ body {
   align-items: start;
 }
 
-/* Panels - softer, less “boxy” */
-.counter,
 .customer-area {
-  background: transparent;
+  background: transparent; /
   border-radius: 18px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.12);
-  overflow: hidden;
-}
-
-.customer-area {
+  box-shadow: none; 
+  overflow: visible; 
   padding: 16px;
 }
 
@@ -300,14 +295,17 @@ body {
 
 /* Customer */
 .customer {
-  text-align: center;
   position: relative;
+  text-align: center;
   transform: translateX(120%);
   opacity: 0;
+  display: flex;
+  flex-direction: column-reverse; 
+  align-items: center;
 }
 
 .customer.enter {
-  animation: customerEnter 0.75s ease-out forwards;
+  animation: customerEnter 1s ease-out forwards;
 }
 
 @keyframes customerEnter {
@@ -330,7 +328,7 @@ body {
 
 /* Bubble with icons */
 .speech-bubble {
-  background: rgba(255, 249, 196, 0.95);
+  background: rgba(255, 249, 196, 0.90);
   padding: 16px 16px;
   border-radius: 18px;
   border: 2px solid rgba(255, 215, 0, 0.8);
@@ -339,11 +337,14 @@ body {
   min-width: 260px;
   max-width: 520px;
   box-shadow: 0 10px 16px rgba(0,0,0,0.12);
+  margin-bottom: 16px; /* Space between bubble and character */
 }
 
+/* Arrow points DOWN at character now */
 .speech-bubble::before {
   content: '';
   position: absolute;
+  top: auto;
   bottom: -16px;
   left: 50%;
   transform: translateX(-50%);
@@ -352,6 +353,7 @@ body {
   border-left: 16px solid transparent;
   border-right: 16px solid transparent;
   border-top: 16px solid rgba(255, 215, 0, 0.8);
+  border-bottom: none;
 }
 
 .speech-bubble p {
