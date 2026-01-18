@@ -67,10 +67,41 @@
     <!-- 2-column layout -->
     <div class="game-layout">
       <!-- LEFT: Menu/Items -->
-      <div class="counter">
-        <h3 id="counterTitle">What can you make?</h3>
-        <div id="menuItems" class="menu-items"></div>
-
+```html
+<div class="counter">
+  <h3 id="counterTitle">Today's Menu</h3>
+  <!-- NEW: Item Hunt Scene (for Level 1) -->
+  <div id="itemHuntContainer" class="hidden">
+    <div class="item-hunt-scene">
+      <div class="hunt-instructions" id="huntInstructions">
+        🔍 Find and click the items!
+      </div>
+      
+      <img src="donut.png" alt="Donut" class="hidden-item" 
+           data-item="donut" onclick="serveItemHunt('donut', this)">
+      
+      <img src="coffee.png" alt="Coffee" class="hidden-item" 
+           data-item="coffee" onclick="serveItemHunt('coffee', this)">
+      
+      <img src="cupcake.png" alt="Cupcake" class="hidden-item" 
+           data-item="cupcake" onclick="serveItemHunt('cupcake', this)">
+      
+      <img src="milkshake.png" alt="Milkshake" class="hidden-item" 
+           data-item="milkshake" onclick="serveItemHunt('milkshake', this)">
+      
+      <img src="cookies.png" alt="Cookie Bag" class="hidden-item" 
+           data-item="cookies" onclick="serveItemHunt('cookies', this)">
+      
+      <img src="water.png" alt="Water" class="hidden-item" 
+           data-item="water" onclick="serveItemHunt('water', this)">
+      
+      <img src="beans.png" alt="Magic Beans" class="hidden-item" 
+           data-item="beans" onclick="serveItemHunt('beans', this)">
+    </div>
+  </div>
+  
+  <div id="menuItems" class="menu-items"></div>
+  
         <!-- Level 3/4: Order Summary -->
         <div id="orderSummary" class="order-summary hidden">
           <h4>Customer's Order:</h4>
