@@ -731,10 +731,9 @@ window.checkTotal = checkTotal;
 
 /* ============================================
    LEVEL 1: ITEM HUNT FUNCTIONS
-   ============================================ *
-  
-  if (levelNum === 1) {
-   function setupLevelMenu(levelNum) {
+   ============================================ */
+
+function setupLevelMenu(levelNum) {
   const itemHunt = document.getElementById('itemHuntContainer');
   const menuItems = document.getElementById('menuItems');
   const counter = document.querySelector('.counter');
@@ -759,68 +758,3 @@ window.checkTotal = checkTotal;
     menuItems.classList.remove('hidden');
   }
 }
-
-// Modified serve function for item hunt mode
-function serveItemHunt(itemId, buttonEl) {
-  const config = levelConfig[currentLevel];
-  
-  // Check if this item is in the current order
-  const index = currentOrder.findIndex((orderItem) => orderItem.id === itemId);
-  const isCorrect = index !== -1;
-  
-  if (isCorrect) {
-    // Mark item as found visually
-    buttonEl.classList.add('found');
-    
-    // Remove from remaining order
-    currentOrder.splice(index, 1);
-    
-    // Fly the item to customer
-    const clickedItem = items.find((it) => it.id === itemId);
-    flyImageFromButtonToCustomer(buttonEl, clickedItem.img, clickedItem.name, () => {
-      updateCustomerDisplay("happy");
-      
-      if (currentOrder.length === 0) {
-        // All items found!
-        showFeedback("Perfect! Thank you! 😊", true);
-        stopTimer();
-        
-        setTimeout(() => {
-          score++;
-          document.getElementById("score").textContent = score;
-          
-          if (score >= config.ordersToWin) {
-            showVictory();
-          } else {
-            // Reset for next round
-            setupLevelMenu(1);
-            newCustomer();
-          }
-        }, 1200);
-      } else {
-        // More items to find
-        showFeedback("Great! Keep looking! 🔍", true, false);
-        setTimeout(() => {
-          hideFeedback();
-          updateCustomerDisplay("think");
-        }, 800);
-      }
-    });
-    
-  } else {
-    // Wrong item clicked
-    updateCustomerDisplay("sad");
-    showFeedback("That's not what I ordered! 🤔", false);
-    
-    // Shake animation for wrong item
-    buttonEl.style.animation = 'shake 0.5s';
-    setTimeout(() => {
-      buttonEl.style.animation = '';
-      updateCustomerDisplay("think");
-      hideFeedback();
-    }, 600);
-  }
-}
-
-// Expose to global scope for onclick handlers
-window.serveItemHunt = serveItemHunt;
