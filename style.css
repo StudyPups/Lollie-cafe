@@ -313,18 +313,13 @@ body {
 }
 
 .customer-img {
-  width: 190px;
-  height: 190px;
+  width: 250px;
+  height: 250px;
   object-fit: contain;
   margin-bottom: 10px;
   filter: drop-shadow(0 6px 10px rgba(0,0,0,0.14));
 }
 
-.customer h3 {
-  font-size: 26px;
-  color: #333;
-  margin: 0 0 12px 0;
-}
 
 /* Bubble with icons */
 .speech-bubble {
@@ -334,8 +329,8 @@ body {
   border: 2px solid rgba(255, 215, 0, 0.8);
   position: relative;
   display: inline-block;
-  min-width: 260px;
-  max-width: 520px;
+  min-width: 190px;
+  max-width: 220px;
   box-shadow: 0 10px 16px rgba(0,0,0,0.12);
   margin-bottom: 16px; /* Space between bubble and character */
 }
@@ -728,8 +723,8 @@ body {
 }
 
 .customer-area.hunt-mode .customer-img {
-  width: 140px;
-  height: 140px;
+  width: 220px;
+  height: 220px;
 }
 
 /* Hide counter in Level 1 */
