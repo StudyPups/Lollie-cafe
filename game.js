@@ -288,8 +288,8 @@ function newCustomer() {
   currentCustomer = customers[Math.floor(Math.random() * customers.length)];
   document.getElementById("customerName").textContent = currentCustomer.name;
 
-  // Start with wait image
-  updateCustomerDisplay("wait");
+  // Start with THINK image (they're thinking about what to order)
+updateCustomerDisplay("think");
 
   // Trigger entrance animation (CSS should animate .customer.enter)
   const customerEl = document.querySelector(".customer");
@@ -323,7 +323,7 @@ function newCustomer() {
     showOrderInBubble(fullOrderSnapshot);
 
     // 3) Customer switches to thinking face after a moment
-    setTimeout(() => updateCustomerDisplay("think"), 700);
+setTimeout(() => updateCustomerDisplay("wait"), 1000);
 
     // 4) Hide order after reveal time and enable menu
     const revealMs = config.revealMs ?? 4000;
