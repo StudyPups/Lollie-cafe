@@ -221,7 +221,7 @@ body {
 }
 
 .customer-area {
-  background: transparent; /
+  background: transparent !important; /* Fixed comment, added !important */
   border-radius: 18px;
   box-shadow: none; 
   overflow: visible; 
@@ -718,7 +718,8 @@ body {
   right: 20px;
   width: 320px;
   z-index: 15;
-  background: rgba(255, 255, 255, 0.95);
+  background: transparent !important; /* ← Changed from white to transparent */
+  box-shadow: none; /* ← Add this line */
 }
 
 .customer-area.hunt-mode .customer {
