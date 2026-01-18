@@ -731,36 +731,31 @@ window.checkTotal = checkTotal;
 
 /* ============================================
    LEVEL 1: ITEM HUNT FUNCTIONS
-   ============================================ */
-
-// Show/hide the appropriate menu based on level
-function setupLevelMenu(levelNum) {
+   ============================================ *
+  
+  if (levelNum === 1) {
+   function setupLevelMenu(levelNum) {
   const itemHunt = document.getElementById('itemHuntContainer');
   const menuItems = document.getElementById('menuItems');
+  const counter = document.querySelector('.counter');
+  const customerArea = document.getElementById('customerArea');
   
   if (levelNum === 1) {
     // Level 1: Item Hunt Mode
     itemHunt.classList.remove('hidden');
-    menuItems.classList.add('hidden');
+    counter.classList.add('hunt-mode');
+    customerArea.classList.add('hunt-mode');
     
-    // Reset all items to be visible and clickable
+    // Reset all items
     document.querySelectorAll('.hidden-item').forEach(item => {
       item.classList.remove('found');
     });
     
-    // Hide instructions after 3 seconds
-    setTimeout(() => {
-      const instructions = document.getElementById('huntInstructions');
-      if (instructions) {
-        instructions.style.opacity = '0';
-        instructions.style.transition = 'opacity 0.5s';
-        setTimeout(() => instructions.style.display = 'none', 500);
-      }
-    }, 3000);
-    
   } else {
-    // Levels 2-4: Regular Grid Menu
+    // Levels 2-4: Regular Menu
     itemHunt.classList.add('hidden');
+    counter.classList.remove('hunt-mode');
+    customerArea.classList.remove('hunt-mode');
     menuItems.classList.remove('hidden');
   }
 }
