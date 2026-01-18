@@ -286,7 +286,6 @@ function newCustomer() {
 
   // Pick random customer
   currentCustomer = customers[Math.floor(Math.random() * customers.length)];
-  document.getElementById("customerName").textContent = currentCustomer.name;
 
   // Start with THINK image (they're thinking about what to order)
 updateCustomerDisplay("think");
