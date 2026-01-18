@@ -613,32 +613,42 @@ body {
   .header-right { margin-top: 10px; }
 }
 /* ============================================
-   LEVEL 1: ITEM HUNT MODE
+   LEVEL 1: ITEM HUNT MODE (REVISED)
    ============================================ */
 
-/* Item Hunt Scene Container */
+/* Item hunt overlay covers the whole game area */
+.item-hunt-overlay {
+  position: fixed;
+  top: 80px; /* Below the header */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  pointer-events: none; /* Allow clicks to pass through to items */
+}
+
 .item-hunt-scene {
   position: relative;
   width: 100%;
   height: 100%;
+  pointer-events: none;
 }
 
-/* Hidden Items (clickable) */
+/* Hidden Items - positioned relative to full viewport */
 .hidden-item {
   position: absolute;
-  width: 6vw;
-  min-width: 50px;
-  max-width: 90px;
-  height: auto;
+  width: 70px;
+  height: 70px;
   cursor: pointer;
   transition: all 0.3s ease;
   filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
   z-index: 10;
   animation: gentle-pulse 2s ease-in-out infinite;
+  pointer-events: auto; /* Items ARE clickable */
 }
 
 .hidden-item:hover {
-  transform: scale(1.2) rotate(5deg);
+  transform: scale(1.3) rotate(5deg);
   filter: drop-shadow(0 6px 12px rgba(255, 105, 180, 0.8));
   z-index: 20;
 }
@@ -649,126 +659,96 @@ body {
   filter: grayscale(100%);
 }
 
-/* Gentle pulse animation */
 @keyframes gentle-pulse {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  50% { transform: scale(1.08); }
 }
 
-/* Shake animation for wrong clicks */
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(-10px); }
   75% { transform: translateX(10px); }
 }
 
-/* Item Positions (based on cafe background) */
-.hidden-item[data-item="donut"] {
-  top: 52%;
-  left: 36%;
-}
-
+/* New positions - spread across the WHOLE cafe scene */
+/* Left side items */
 .hidden-item[data-item="coffee"] {
-  top: 35%;
-  left: 12%;
-}
-
-.hidden-item[data-item="cupcake"] {
-  top: 58%;
-  left: 42%;
-}
-
-.hidden-item[data-item="milkshake"] {
-  top: 65%;
-  left: 75%;
+  top: 25%;
+  left: 8%;
 }
 
 .hidden-item[data-item="cookies"] {
-  top: 30%;
-  left: 22%;
+  top: 18%;
+  left: 18%;
+}
+
+/* Center items */
+.hidden-item[data-item="donut"] {
+  top: 45%;
+  left: 28%;
+}
+
+.hidden-item[data-item="cupcake"] {
+  top: 52%;
+  left: 35%;
 }
 
 .hidden-item[data-item="water"] {
-  top: 42%;
-  left: 50%;
+  top: 30%;
+  left: 42%;
+}
+
+/* Right side items */
+.hidden-item[data-item="milkshake"] {
+  top: 58%;
+  left: 68%;
 }
 
 .hidden-item[data-item="beans"] {
-  top: 33%;
-  left: 82%;
+  top: 22%;
+  left: 78%;
 }
 
-/* Instructions overlay */
-.hunt-instructions {
-  position: absolute;
-  top: 5%;
-  left: 50%;
-  transform: translateX(-50%);
+/* Customer area modifications for Level 1 */
+.customer-area.hunt-mode {
+  position: fixed !important;
+  bottom: 20px;
+  right: 20px;
+  width: 320px;
+  z-index: 15;
   background: rgba(255, 255, 255, 0.95);
-  padding: 12px 24px;
-  border-radius: 20px;
-  font-size: 18px;
-  font-weight: bold;
-  color: #F52887;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  z-index: 100;
-  animation: fade-in-down 0.5s ease;
 }
 
-@keyframes fade-in-down {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
+.customer-area.hunt-mode .customer {
+  transform: translateX(0) !important;
+  opacity: 1 !important;
 }
 
-/* Responsive adjustments */
-@media (max-width: 1200px) {
-  .item-hunt-scene {
-    max-width: 95vw;
-  }
-  
-  .hidden-item {
-    width: 7vw;
-    min-width: 45px;
-    max-width: 75px;
-  }
+.customer-area.hunt-mode .customer-img {
+  width: 140px;
+  height: 140px;
 }
 
+/* Hide counter in Level 1 */
+.counter.hunt-mode {
+  display: none;
+}
+
+/* Mobile adjustments */
 @media (max-width: 768px) {
-  .item-hunt-scene {
-    aspect-ratio: 4 / 3;
-    border-radius: 15px;
-  }
-  
   .hidden-item {
-    width: 10vw;
-    min-width: 50px;
-    max-width: 70px;
+    width: 60px;
+    height: 60px;
   }
   
-  .hidden-item[data-item="beans"] {
-    top: 35%;
-    left: 78%;
+  .customer-area.hunt-mode {
+    width: 280px;
+    bottom: 10px;
+    right: 10px;
   }
   
-  .hunt-instructions {
-    font-size: 14px;
-    padding: 8px 16px;
+  .customer-area.hunt-mode .customer-img {
+    width: 120px;
+    height: 120px;
   }
 }
-
-@media (max-width: 480px) {
-  .hidden-item {
-    width: 12vw;
-    min-width: 45px;
-    max-width: 60px;
-  }
-}
-```
-
----
