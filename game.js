@@ -24,6 +24,8 @@ let timeRemaining = 0;
 
 let orderRevealTimeout = null;  // used to hide order after a delay
 
+let thoughtInterval = null;
+
 
 /* ---------------------------
    Game Data
@@ -174,7 +176,13 @@ function startLevel(level) {
 
   // Clean up any timers / pending reveals from previous level
   stopTimer();
-  clearOrderRevealTimeout();
+clearOrderRevealTimeout();
+hideFeedback();
+
+// Reset all hunt items (remove 'found' class)
+document.querySelectorAll('.hidden-item').forEach(item => {
+  item.classList.remove('found');
+});
 
   // Update header
   document.getElementById("levelTitle").textContent = config.title;
@@ -213,7 +221,13 @@ function nextLevel() {
 
 function quitToLevelSelect() {
   stopTimer();
-  clearOrderRevealTimeout();
+clearOrderRevealTimeout();
+hideFeedback();
+
+// Reset all hunt items (remove 'found' class)
+document.querySelectorAll('.hidden-item').forEach(item => {
+  item.classList.remove('found');
+});
   showLevelSelect();
 }
 
@@ -281,8 +295,13 @@ function newCustomer() {
   const config = levelConfig[currentLevel];
 
   stopTimer();
-  clearOrderRevealTimeout();
-  hideFeedback();
+clearOrderRevealTimeout();
+hideFeedback();
+
+// Reset all hunt items (remove 'found' class)
+document.querySelectorAll('.hidden-item').forEach(item => {
+  item.classList.remove('found');
+});
 
   // Pick random customer
   currentCustomer = customers[Math.floor(Math.random() * customers.length)];
@@ -309,7 +328,7 @@ updateCustomerDisplay("think");
   if (config.mathMode) {
     // Math levels: show summary after a short beat
     document.getElementById("customerOrder").textContent = "Let me think… 🤔";
-    setTimeout(() => updateCustomerDisplay("think"), 700);
+    setTimeout(() => updateCustomerDisplay("think"), 1000);
     setTimeout(() => showMathChallenge(), 1200);
     // Disable menu while in math mode
     setMenuEnabled(false);
@@ -321,20 +340,51 @@ updateCustomerDisplay("think");
     // 2) Show order (as images + words)
     showOrderInBubble(fullOrderSnapshot);
 
-    // 3) Customer switches to thinking face after a moment
-setTimeout(() => updateCustomerDisplay("wait"), 1000);
 
-    // 4) Hide order after reveal time and enable menu
+ // 4) Hide order after reveal time and enable menu
     const revealMs = config.revealMs ?? 4000;
     orderRevealTimeout = setTimeout(() => {
       hideOrderInBubble();
       setMenuEnabled(true);
+      
+      // NOW switch to wait pose (bubble is gone, player can serve)
+      updateCustomerDisplay("wait");
 
-      // Optional: helpful prompt
-      document.getElementById("customerOrder").textContent =
-        "Okay… what did I order again? 🤔";
+      // Clear any existing thought interval
+      if (thoughtInterval) {
+        clearInterval(thoughtInterval);
+      }
+
+      // Array of random thoughts
+      const randomThoughts = [
+        "I love this cafe! ❤️",
+        "Mmm smells good in here! ☕",
+        "I can't wait to try today's menu! 😋",
+        "Did I remember to water the magic beanstalk today? 🌱",
+        "I'm quite hungry now! 🍰",
+        "This place is so cozy! ✨"
+      ];
+
+      let thoughtIndex = 0;
+      
+      // Show first thought immediately
+      document.getElementById("customerOrder").textContent = randomThoughts[0];
+      thoughtIndex++;
+
+      // Then show a new thought every 3 seconds
+      thoughtInterval = setInterval(() => {
+        if (thoughtIndex < randomThoughts.length) {
+          document.getElementById("customerOrder").textContent = randomThoughts[thoughtIndex];
+          thoughtIndex++;
+        } else {
+          // Loop back to start
+          thoughtIndex = 0;
+        }
+      }, 3570); // 3000ms = 3 seconds
+      
     }, revealMs);
   }
+
 
   // Start timer if needed (Level 2)
   if (config.timer) startTimer(config.timeLimit);
@@ -412,7 +462,7 @@ function handleTimeout() {
   setTimeout(() => {
     if (score >= levelConfig[currentLevel].ordersToWin) showVictory();
     else newCustomer();
-  }, 1400);
+  }, 2750);
 }
 
 function clearOrderRevealTimeout() {
@@ -472,16 +522,16 @@ function serveItem(itemId, buttonEl) {
           }
         }, 900);
       } else {
-        showFeedback("Yum! What else? 😋", true, false);
+        showFeedback("Yes! That's for me!", true, false);
         setTimeout(() => {
           hideFeedback();
           updateCustomerDisplay("think");
-        }, 800);
+        }, 2570);
       }
     } else {
       // Wrong item: show sad, then allow them to try a different item
       updateCustomerDisplay("sad");
-      showFeedback("Oops! That’s not right. Try again!", false, false);
+      showFeedback("Oh no! That's not what I ordered!", false, false);
 
       setTimeout(() => {
         hideFeedback();
@@ -678,7 +728,7 @@ function showFeedback(message, isCorrect, autoClear = true) {
   el.classList.remove("hidden");
 
   if (autoClear) {
-    setTimeout(() => el.classList.add("hidden"), 1200);
+    setTimeout(() => el.classList.add("hidden"), 1350);
   }
 }
 
@@ -757,3 +807,61 @@ function setupLevelMenu(levelNum) {
     menuItems.classList.remove('hidden');
   }
 }
+function serveItemHunt(itemId, imgElement) {
+  // Check if this item is in the current order
+  const index = currentOrder.findIndex((orderItem) => orderItem.id === itemId);
+  const isCorrect = index !== -1;
+
+  if (isCorrect) {
+    // Remove from remaining order
+    currentOrder.splice(index, 1);
+
+    // Mark item as found (greyed out)
+    imgElement.classList.add('found');
+
+    // Customer reacts happy
+    updateCustomerDisplay("happy");
+
+    if (currentOrder.length === 0) {
+      // All items found!
+      showFeedback("Perfect! Thank you! 😊", true, true);
+      
+      // Clear the thought interval
+      if (thoughtInterval) {
+        clearInterval(thoughtInterval);
+        thoughtInterval = null;
+      }
+
+      setTimeout(() => {
+        score++;
+        document.getElementById("score").textContent = score;
+
+        if (score >= levelConfig[currentLevel].ordersToWin) {
+          showVictory();
+        } else {
+          // Reset for next customer
+          newCustomer();
+        }
+      }, 900);
+    } else {
+      // Some items still needed
+      showFeedback("Yes! That's for me!", true, false);
+      setTimeout(() => {
+        hideFeedback();
+        updateCustomerDisplay("wait");
+      }, 800);
+    }
+  } else {
+    // Wrong item clicked
+    updateCustomerDisplay("sad");
+    showFeedback("Oh no! That's not what I ordered!", false, false);
+
+    setTimeout(() => {
+      hideFeedback();
+      updateCustomerDisplay("wait");
+    }, 900);
+  }
+}
+
+// Make it available to HTML onclick
+window.serveItemHunt = serveItemHunt;
