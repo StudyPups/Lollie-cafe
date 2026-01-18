@@ -829,5 +829,3 @@ function serveItemHunt(itemId, buttonEl) {
 
 // Expose to global scope for onclick handlers
 window.serveItemHunt = serveItemHunt;
-```
-window.checkChange = checkChange;
