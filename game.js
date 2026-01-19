@@ -12,8 +12,10 @@
 /* ---------------------------
    Game State
 --------------------------- */
+
 let currentLevel = 1;
 let score = 0;
+let lives = 4;  // ← ADD THIS LINE
 
 let currentCustomer = null;
 let currentOrder = [];          // array of item objects still needed
@@ -90,7 +92,7 @@ const levelConfig = {
     description: "Remember orders before time runs out!",
     orderSize: [3, 4],
     timer: true,
-    timeLimit: 45,
+    timeLimit: 40,
     showPrices: false,
     mathMode: false,
     changeMode: false,
@@ -187,6 +189,8 @@ document.querySelectorAll('.hidden-item').forEach(item => {
   // Update header
   document.getElementById("levelTitle").textContent = config.title;
   document.getElementById("score").textContent = score;
+  updateLivesDisplay();  // ← ADD THIS LINE
+
 
   // Timer UI
   const timerDisplay = document.getElementById("timerDisplay");
@@ -196,8 +200,8 @@ document.querySelectorAll('.hidden-item').forEach(item => {
  // Setup the appropriate menu for this level
 setupLevelMenu(level);
 
-// Build regular menu for levels 2-4
-if (level > 1) {
+// Build regular menu for levels 3-4
+if (level > 2) {
   buildMenu(config);
 }
 
@@ -454,6 +458,7 @@ function handleTimeout() {
   // On timeout, customer is sad and we move on.
   // You can add penalties/lives later if you want.
   updateCustomerDisplay("sad");
+  loseLife();  // ← ADD THIS LINE
   showFeedback("Time’s up! Too slow!", false);
 
   // Re-enable menu in case we were mid-reveal
@@ -788,8 +793,9 @@ function setupLevelMenu(levelNum) {
   const counter = document.querySelector('.counter');
   const customerArea = document.getElementById('customerArea');
   
-  if (levelNum === 1) {
-    // Level 1: Item Hunt Mode
+ if (levelNum === 1 || levelNum === 2) {
+  // Levels 1 & 2: Item Hunt Mode
+  
     itemHunt.classList.remove('hidden');
     counter.classList.add('hunt-mode');
     customerArea.classList.add('hunt-mode');
@@ -800,7 +806,7 @@ function setupLevelMenu(levelNum) {
     });
     
   } else {
-    // Levels 2-4: Regular Menu
+    // Levels 3-4: Regular Menu
     itemHunt.classList.add('hidden');
     counter.classList.remove('hunt-mode');
     customerArea.classList.remove('hunt-mode');
@@ -851,17 +857,59 @@ function serveItemHunt(itemId, imgElement) {
         updateCustomerDisplay("wait");
       }, 800);
     }
-  } else {
-    // Wrong item clicked
-    updateCustomerDisplay("sad");
-    showFeedback("Oh no! That's not what I ordered!", false, false);
+ } else {
+  // Wrong item clicked
+  updateCustomerDisplay("sad");
+  loseLife();  // ← ADD THIS LINE
+  showFeedback("Oh no! That's not what I ordered!", false, false);
 
-    setTimeout(() => {
-      hideFeedback();
-      updateCustomerDisplay("wait");
-    }, 900);
-  }
+  setTimeout(() => {
+    hideFeedback();
+    updateCustomerDisplay("wait");
+  }, 900);
+}
 }
 
 // Make it available to HTML onclick
 window.serveItemHunt = serveItemHunt;
+/* =========================================================
+   Lives System
+========================================================= */
+function updateLivesDisplay() {
+  const livesElement = document.getElementById("lives");
+  if (!livesElement) return;
+  
+  let heartsHTML = "";
+  for (let i = 0; i < lives; i++) {
+    heartsHTML += "❤️ ";
+  }
+  livesElement.innerHTML = heartsHTML || "💔";
+}
+
+function loseLife() {
+  lives--;
+  updateLivesDisplay();
+  
+  if (lives <= 0) {
+    // Game Over - show the game over screen
+    setTimeout(() => {
+      showGameOver();
+    }, 1500);
+  }
+}
+
+/* =========================================================
+   Game Over Screen
+========================================================= */
+function showGameOver() {
+  hideAllScreens();
+  document.getElementById("gameOverScreen").classList.remove("hidden");
+}
+
+function restartLevel() {
+  lives = 4;  // Reset lives for restart
+  startLevel(currentLevel);
+}
+
+// Make functions available globally
+window.restartLevel = restartLevel;

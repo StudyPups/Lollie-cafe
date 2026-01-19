@@ -9,12 +9,20 @@
 </head>
 
 <body>
-  <!-- Start Screen -->
-  <div id="startScreen" class="screen">
-    <h1>Welcome To Lollie's Cafe</h1>
-    <p>Can you get all the orders right in Lollie's cafe?</p>
-    <button onclick="showLevelSelect()" class="big-button" type="button">Start Game!</button>
-  </div>
+ <!-- Start Screen -->
+<div id="startScreen" class="screen">
+  <!-- Floating cafe items -->
+  <img src="donut.png" class="floating-item-decor donut-decor" alt="Donut">
+  <img src="coffee.png" class="floating-item-decor coffee-decor" alt="Coffee">
+  <img src="cupcake.png" class="floating-item-decor cupcake-decor" alt="Cupcake">
+  <img src="milkshake.png" class="floating-item-decor milkshake-decor" alt="Milkshake">
+  <img src="cookies.png" class="floating-item-decor cookies-decor" alt="Cookies">
+  <img src="beans.png" class="floating-item-decor beans-decor" alt="Magic Beans">
+  
+  <h1>Welcome To Lollie's Cafe</h1>
+  <p>Can you get all the orders right in Lollie's cafe?</p>
+  <button onclick="showLevelSelect()" class="big-button" type="button">Start Game!</button>
+</div>
 
   <!-- Level Select Screen -->
   <div id="levelSelect" class="screen hidden">
@@ -59,9 +67,30 @@
         <p id="levelTitle">Level 1: Memory Challenge</p>
       </div>
       <div class="header-right">
-        <p>Score: <span id="score">0</span></p>
-        <p id="timerDisplay" class="hidden">Time: <span id="timer">60</span>s</p>
-      </div>
+  <p>Score: <span id="score">0</span></p>
+  <p>Lives: <span id="lives">❤️ ❤️ ❤️ ❤️</span></p>
+  <p id="timerDisplay" class="hidden">Time: <span id="timer">60</span>s</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </div>
 
    <div class="game-layout">
@@ -152,5 +181,16 @@
       <button onclick="showLevelSelect()" class="big-button secondary" type="button">Level Select</button>
     </div>
   </div>
+  <!-- Game Over Screen -->
+<div id="gameOverScreen" class="screen hidden">
+  <h1>💔 Oh No! 💔</h1>
+  <div class="gameover-stats">
+    <p id="gameOverMessage">Good try! Please restart the level.</p>
+  </div>
+  <div class="gameover-buttons">
+    <button onclick="restartLevel()" class="big-button" type="button">Restart Level</button>
+    <button onclick="showLevelSelect()" class="big-button secondary" type="button">Level Select</button>
+  </div>
+</div>
 </body>
 </html>

@@ -63,19 +63,27 @@ body {
 }
 
 .back-button, .quit-button {
-  background-color: #888;
-  color: white;
-  border: none;
+  background-color: #82CAFF;
+  color: black;
+  border: 2px solid #5FA8D3;
   padding: 12px 24px;
   font-size: 18px;
   border-radius: 25px;
   cursor: pointer;
   margin-top: 20px;
   font-family: 'Comic Sans MS', cursive;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
 }
 
 .back-button:hover, .quit-button:hover {
-  background-color: #666;
+  transform: scale(1.05);
+  box-shadow: 0 6px 8px rgba(0,0,0,0.3);
+  background-color: #5FA8D3;
+}
+
+.back-button:hover, .quit-button:hover {
+  background-color: #a7a7f3
 }
 
 .quit-button {
@@ -751,4 +759,87 @@ body {
     width: 120px;
     height: 120px;
   }
+}
+/* Welcome Screen Decorations */
+.floating-item-decor {
+  position: absolute;
+  width: 130px;
+  height: 130px;
+  object-fit: contain;
+  animation: gentle-float 3s ease-in-out infinite;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+}
+
+@keyframes gentle-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+}
+
+.donut-decor {
+  top: 15%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.coffee-decor {
+  top: 25%;
+  right: 12%;
+  animation-delay: 0.5s;
+}
+
+.cupcake-decor {
+  bottom: 25%;
+  left: 8%;
+  animation-delay: 1s;
+}
+
+.milkshake-decor {
+  bottom: 20%;
+  right: 10%;
+  animation-delay: 1.5s;
+}
+
+.cookies-decor {
+  top: 35%;
+  left: 5%;
+  animation-delay: 2s;
+}
+
+.beans-decor {
+  top: 45%;
+  right: 7%;
+  animation-delay: 2.5s;
+}
+/* Game Over Screen */
+#gameOverScreen {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+}
+
+#gameOverScreen h1 {
+  color: white;
+  font-size: 56px;
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+  margin-bottom: 30px;
+}
+
+.gameover-stats {
+  background: white;
+  padding: 30px 50px;
+  border-radius: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+#gameOverMessage {
+  font-size: 28px;
+  color: #ff6b6b;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.gameover-buttons {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
