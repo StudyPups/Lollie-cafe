@@ -12,10 +12,8 @@
 /* ---------------------------
    Game State
 --------------------------- */
-
 let currentLevel = 1;
 let score = 0;
-let lives = 4;  // ← ADD THIS LINE
 
 let currentCustomer = null;
 let currentOrder = [];          // array of item objects still needed
@@ -26,7 +24,65 @@ let timeRemaining = 0;
 
 let orderRevealTimeout = null;  // used to hide order after a delay
 
-let thoughtInterval = null;
+// Math help system
+let mistakeCount = 0;           // tracks wrong attempts on current question
+
+/* ---------------------------
+   Player Profile System
+--------------------------- */
+let currentPlayer = null;  // Currently selected player name
+let selectedColor = 'hotpink';  // Selected color for new player
+
+// Load all players from localStorage
+function loadPlayers() {
+  const saved = localStorage.getItem('lolliesCafePlayers');
+  if (saved) {
+    return JSON.parse(saved);
+  }
+  return {}; // Empty object if no players yet
+}
+
+// Save all players to localStorage
+function savePlayers(players) {
+  localStorage.setItem('lolliesCafePlayers', JSON.stringify(players));
+}
+
+// Get current player's data
+function getCurrentPlayerData() {
+  const players = loadPlayers();
+  return players[currentPlayer] || { completedLevels: [1], color: 'hotpink' };
+}
+
+// Update current player's data
+function updateCurrentPlayerData(data) {
+  const players = loadPlayers();
+  players[currentPlayer] = { ...players[currentPlayer], ...data };
+  savePlayers(players);
+}
+
+// Check if a level is unlocked for current player
+function isLevelUnlocked(levelNum) {
+  const playerData = getCurrentPlayerData();
+  return playerData.completedLevels.includes(levelNum);
+}
+
+// Mark level as completed for current player
+function completeLevel(levelNum) {
+  const playerData = getCurrentPlayerData();
+  
+  // Add this level if not already completed
+  if (!playerData.completedLevels.includes(levelNum)) {
+    playerData.completedLevels.push(levelNum);
+  }
+  
+  // Unlock next level
+  const nextLevel = levelNum + 1;
+  if (nextLevel <= 6 && !playerData.completedLevels.includes(nextLevel)) {
+    playerData.completedLevels.push(nextLevel);
+  }
+  
+  updateCurrentPlayerData({ completedLevels: playerData.completedLevels });
+}
 
 
 /* ---------------------------
@@ -92,7 +148,7 @@ const levelConfig = {
     description: "Remember orders before time runs out!",
     orderSize: [3, 4],
     timer: true,
-    timeLimit: 40,
+    timeLimit: 45,
     showPrices: false,
     mathMode: false,
     changeMode: false,
@@ -138,9 +194,17 @@ function showStart() {
   document.getElementById("startScreen").classList.remove("hidden");
 }
 
+function showPlayerSelect() {
+  hideAllScreens();
+  document.getElementById("playerSelect").classList.remove("hidden");
+  displayPlayerList();
+  hideNewPlayerForm(); // Make sure form is hidden
+}
+
 function showLevelSelect() {
   hideAllScreens();
   document.getElementById("levelSelect").classList.remove("hidden");
+  updateLevelButtons();
 }
 
 function showGame() {
@@ -153,6 +217,9 @@ function showVictory() {
   document.getElementById("victoryScreen").classList.remove("hidden");
   document.getElementById("finalScore").textContent = score;
 
+  // Mark level as completed and unlock next
+  completeLevel(currentLevel);
+
   let message = "Amazing work!";
   if (score >= levelConfig[currentLevel].ordersToWin) {
     message = "Perfect! You're a cafe master! ⭐";
@@ -162,8 +229,127 @@ function showVictory() {
   document.getElementById("victoryMessage").textContent = message;
 
   const nextBtn = document.getElementById("nextLevelBtn");
-  if (currentLevel < 4) nextBtn.classList.remove("hidden");
+  if (currentLevel < 6) nextBtn.classList.remove("hidden");
   else nextBtn.classList.add("hidden");
+}
+
+
+/* =========================================================
+   Player UI Functions
+========================================================= */
+function displayPlayerList() {
+  const players = loadPlayers();
+  const container = document.getElementById('playerList');
+  container.innerHTML = '';
+  
+  // If no players, show a welcome message
+  if (Object.keys(players).length === 0) {
+    container.innerHTML = '<p style="color: white; font-size: 20px; text-align: center;">No players yet! Create your first profile below.</p>';
+    return;
+  }
+  
+  // Create a card for each player
+  Object.keys(players).forEach(playerName => {
+    const data = players[playerName];
+    const card = document.createElement('div');
+    card.className = 'player-card';
+    card.onclick = () => selectPlayer(playerName);
+    
+    const levelsCompleted = data.completedLevels.length - 1; // -1 because level 1 is unlocked by default
+    const progressText = levelsCompleted === 0 ? 'Just started!' : 
+                         levelsCompleted === 6 ? '🏆 All levels complete!' :
+                         `${levelsCompleted} level${levelsCompleted > 1 ? 's' : ''} complete`;
+    
+    card.innerHTML = `
+      <button class="delete-player" onclick="event.stopPropagation(); deletePlayer('${playerName}')" title="Delete player">✕</button>
+      <div class="cup-icon" style="color: ${data.color};">☕</div>
+      <div class="player-name">${playerName}</div>
+      <div class="player-progress">${progressText}</div>
+    `;
+    
+    container.appendChild(card);
+  });
+}
+
+function selectPlayer(playerName) {
+  currentPlayer = playerName;
+  showLevelSelect();
+}
+
+function deletePlayer(playerName) {
+  if (confirm(`Delete ${playerName}'s profile? This cannot be undone!`)) {
+    const players = loadPlayers();
+    delete players[playerName];
+    savePlayers(players);
+    displayPlayerList();
+  }
+}
+
+function showNewPlayerForm() {
+  document.getElementById('newPlayerForm').classList.remove('hidden');
+  document.getElementById('newPlayerName').value = '';
+  document.getElementById('newPlayerName').focus();
+  
+  // Reset color selection
+  document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('selected'));
+  selectedColor = 'hotpink';
+  document.querySelector('.color-btn[data-color="hotpink"]').classList.add('selected');
+}
+
+function hideNewPlayerForm() {
+  document.getElementById('newPlayerForm').classList.add('hidden');
+}
+
+function selectColor(color) {
+  selectedColor = color;
+  document.querySelectorAll('.color-btn').forEach(btn => {
+    btn.classList.remove('selected');
+  });
+  document.querySelector(`.color-btn[data-color="${color}"]`).classList.add('selected');
+}
+
+function createPlayer() {
+  const nameInput = document.getElementById('newPlayerName');
+  const name = nameInput.value.trim();
+  
+  if (!name) {
+    alert('Please enter a name!');
+    return;
+  }
+  
+  const players = loadPlayers();
+  
+  if (players[name]) {
+    alert('A player with that name already exists!');
+    return;
+  }
+  
+  // Create new player with level 1 unlocked
+  players[name] = {
+    completedLevels: [1],
+    color: selectedColor
+  };
+  
+  savePlayers(players);
+  currentPlayer = name;
+  
+  // Go straight to level select
+  showLevelSelect();
+}
+
+function updateLevelButtons() {
+  for (let i = 1; i <= 6; i++) {
+    const button = document.querySelector(`button[onclick="startLevel(${i})"]`);
+    if (button) {
+      if (isLevelUnlocked(i)) {
+        button.classList.remove('locked');
+        button.disabled = false;
+      } else {
+        button.classList.add('locked');
+        button.disabled = true;
+      }
+    }
+  }
 }
 
 
@@ -171,6 +357,11 @@ function showVictory() {
    Level Management
 ========================================================= */
 function startLevel(level) {
+  // Check if level is unlocked
+  if (!isLevelUnlocked(level)) {
+    return; // Don't start locked levels
+  }
+  
   currentLevel = level;
   score = 0;
 
@@ -178,19 +369,11 @@ function startLevel(level) {
 
   // Clean up any timers / pending reveals from previous level
   stopTimer();
-clearOrderRevealTimeout();
-hideFeedback();
-
-// Reset all hunt items (remove 'found' class)
-document.querySelectorAll('.hidden-item').forEach(item => {
-  item.classList.remove('found');
-});
+  clearOrderRevealTimeout();
 
   // Update header
   document.getElementById("levelTitle").textContent = config.title;
   document.getElementById("score").textContent = score;
-  updateLivesDisplay();  // ← ADD THIS LINE
-
 
   // Timer UI
   const timerDisplay = document.getElementById("timerDisplay");
@@ -200,7 +383,7 @@ document.querySelectorAll('.hidden-item').forEach(item => {
  // Setup the appropriate menu for this level
 setupLevelMenu(level);
 
-// Build regular menu for levels 3-4
+// Build regular menu for levels 3-6 (levels 1-2 use item hunt)
 if (level > 2) {
   buildMenu(config);
 }
@@ -225,13 +408,7 @@ function nextLevel() {
 
 function quitToLevelSelect() {
   stopTimer();
-clearOrderRevealTimeout();
-hideFeedback();
-
-// Reset all hunt items (remove 'found' class)
-document.querySelectorAll('.hidden-item').forEach(item => {
-  item.classList.remove('found');
-});
+  clearOrderRevealTimeout();
   showLevelSelect();
 }
 
@@ -299,19 +476,21 @@ function newCustomer() {
   const config = levelConfig[currentLevel];
 
   stopTimer();
-clearOrderRevealTimeout();
-hideFeedback();
+  clearOrderRevealTimeout();
+  hideFeedback();
 
-// Reset all hunt items (remove 'found' class)
-document.querySelectorAll('.hidden-item').forEach(item => {
-  item.classList.remove('found');
-});
+  // For Levels 1 & 2: Reset all hidden items
+  if (currentLevel === 1 || currentLevel === 2) {
+    document.querySelectorAll('.hidden-item').forEach(item => {
+      item.classList.remove('found');
+    });
+  }
 
   // Pick random customer
   currentCustomer = customers[Math.floor(Math.random() * customers.length)];
 
   // Start with THINK image (they're thinking about what to order)
-updateCustomerDisplay("think");
+  updateCustomerDisplay("think");
 
   // Trigger entrance animation (CSS should animate .customer.enter)
   const customerEl = document.querySelector(".customer");
@@ -332,63 +511,48 @@ updateCustomerDisplay("think");
   if (config.mathMode) {
     // Math levels: show summary after a short beat
     document.getElementById("customerOrder").textContent = "Let me think… 🤔";
-    setTimeout(() => updateCustomerDisplay("think"), 1000);
+    setTimeout(() => updateCustomerDisplay("think"), 700);
     setTimeout(() => showMathChallenge(), 1200);
     // Disable menu while in math mode
     setMenuEnabled(false);
+  } else if (currentLevel === 1 || currentLevel === 2) {
+    // Levels 1 & 2: Item Hunt Mode
+    // 1) Show order (as images + words)
+    showOrderInBubble(fullOrderSnapshot);
+
+    // 2) Customer switches to waiting face after a moment
+    setTimeout(() => updateCustomerDisplay("wait"), 1000);
+
+    // 3) Hide order after reveal time - items stay clickable (no menu to enable)
+    const revealMs = config.revealMs ?? 5000;
+    orderRevealTimeout = setTimeout(() => {
+      hideOrderInBubble();
+      // For item hunt levels, show helpful prompt
+      document.getElementById("customerOrder").textContent =
+        "Find my items in the cafe! 🔍";
+    }, revealMs);
   } else {
-    // Memory levels (1 & 2):
+    // Memory levels (3+):
     // 1) Disable menu while order is being shown
     setMenuEnabled(false);
 
     // 2) Show order (as images + words)
     showOrderInBubble(fullOrderSnapshot);
 
+    // 3) Customer switches to thinking face after a moment
+    setTimeout(() => updateCustomerDisplay("wait"), 1000);
 
- // 4) Hide order after reveal time and enable menu
+    // 4) Hide order after reveal time and enable menu
     const revealMs = config.revealMs ?? 4000;
     orderRevealTimeout = setTimeout(() => {
       hideOrderInBubble();
       setMenuEnabled(true);
-      
-      // NOW switch to wait pose (bubble is gone, player can serve)
-      updateCustomerDisplay("wait");
 
-      // Clear any existing thought interval
-      if (thoughtInterval) {
-        clearInterval(thoughtInterval);
-      }
-
-      // Array of random thoughts
-      const randomThoughts = [
-        "I love this cafe! ❤️",
-        "Mmm smells good in here! ☕",
-        "I can't wait to try today's menu! 😋",
-        "Did I remember to water the magic beanstalk today? 🌱",
-        "I'm quite hungry now! 🍰",
-        "This place is so cozy! ✨"
-      ];
-
-      let thoughtIndex = 0;
-      
-      // Show first thought immediately
-      document.getElementById("customerOrder").textContent = randomThoughts[0];
-      thoughtIndex++;
-
-      // Then show a new thought every 3 seconds
-      thoughtInterval = setInterval(() => {
-        if (thoughtIndex < randomThoughts.length) {
-          document.getElementById("customerOrder").textContent = randomThoughts[thoughtIndex];
-          thoughtIndex++;
-        } else {
-          // Loop back to start
-          thoughtIndex = 0;
-        }
-      }, 3570); // 3000ms = 3 seconds
-      
+      // Optional: helpful prompt
+      document.getElementById("customerOrder").textContent =
+        "Okay… what did I order again? 🤔";
     }, revealMs);
   }
-
 
   // Start timer if needed (Level 2)
   if (config.timer) startTimer(config.timeLimit);
@@ -458,7 +622,6 @@ function handleTimeout() {
   // On timeout, customer is sad and we move on.
   // You can add penalties/lives later if you want.
   updateCustomerDisplay("sad");
-  loseLife();  // ← ADD THIS LINE
   showFeedback("Time’s up! Too slow!", false);
 
   // Re-enable menu in case we were mid-reveal
@@ -467,7 +630,7 @@ function handleTimeout() {
   setTimeout(() => {
     if (score >= levelConfig[currentLevel].ordersToWin) showVictory();
     else newCustomer();
-  }, 2750);
+  }, 1400);
 }
 
 function clearOrderRevealTimeout() {
@@ -527,16 +690,16 @@ function serveItem(itemId, buttonEl) {
           }
         }, 900);
       } else {
-        showFeedback("Yes! That's for me!", true, false);
+        showFeedback("Yum! What else? 😋", true, false);
         setTimeout(() => {
           hideFeedback();
           updateCustomerDisplay("think");
-        }, 2570);
+        }, 800);
       }
     } else {
       // Wrong item: show sad, then allow them to try a different item
       updateCustomerDisplay("sad");
-      showFeedback("Oh no! That's not what I ordered!", false, false);
+      showFeedback("Oops! That’s not right. Try again!", false, false);
 
       setTimeout(() => {
         hideFeedback();
@@ -607,6 +770,10 @@ function flyImageFromButtonToCustomer(buttonEl, imgSrc, altText, onArrive) {
 ========================================================= */
 function showMathChallenge() {
   const config = levelConfig[currentLevel];
+  
+  // Reset mistake counter for new question
+  mistakeCount = 0;
+  document.getElementById("hintButton").classList.add("hidden");
 
   // Build order list
   const orderList = document.getElementById("orderList");
@@ -697,6 +864,10 @@ function checkChange() {
 function handleMathCorrect() {
   updateCustomerDisplay("happy");
   showFeedback("Correct! Great maths! 🌟", true);
+  
+  // Reset mistake counter for next question
+  mistakeCount = 0;
+  document.getElementById("hintButton").classList.add("hidden");
 
   setTimeout(() => {
     score++;
@@ -720,6 +891,20 @@ function handleMathCorrect() {
 function handleMathWrong() {
   updateCustomerDisplay("sad");
   showFeedback("Not quite — try again!", false);
+  
+  mistakeCount++;
+  
+  // After 1 mistake: show hint button
+  if (mistakeCount === 1 && currentLevel === 4) {
+    document.getElementById("hintButton").classList.remove("hidden");
+  }
+  
+  // After 3 mistakes: force show help popup
+  if (mistakeCount >= 3 && currentLevel === 4) {
+    setTimeout(() => {
+      showMathHelpPopup();
+    }, 1200); // After feedback message clears
+  }
 }
 
 
@@ -733,7 +918,7 @@ function showFeedback(message, isCorrect, autoClear = true) {
   el.classList.remove("hidden");
 
   if (autoClear) {
-    setTimeout(() => el.classList.add("hidden"), 1350);
+    setTimeout(() => el.classList.add("hidden"), 1200);
   }
 }
 
@@ -752,11 +937,74 @@ function randInt(min, max) {
 
 
 /* =========================================================
+   Math Help System
+========================================================= */
+function showHint() {
+  // Just show the popup when they click the hint button
+  showMathHelpPopup();
+}
+
+function showMathHelpPopup() {
+  const total = fullOrderSnapshot.reduce((sum, item) => sum + item.price, 0);
+  const payment = parseFloat(document.getElementById("customerPayment").textContent);
+  const correctChange = payment - total;
+  
+  // Format numbers for display
+  const paymentStr = payment.toFixed(2);
+  const totalStr = total.toFixed(2);
+  const changeStr = correctChange.toFixed(2);
+  
+  // Split into dollars and cents for highlighting
+  const [payDollars, payCents] = paymentStr.split('.');
+  const [totalDollars, totalCents] = totalStr.split('.');
+  
+  // Check if borrowing is needed in cents column
+  const needsBorrowCents = parseInt(payCents) < parseInt(totalCents);
+  
+  // Build the visual subtraction display
+  let html = `
+    <div class="subtraction-row">
+      <span class="subtraction-label">Customer pays:</span>
+      <span class="subtraction-number">$ ${payDollars} . ${payCents}</span>
+    </div>
+    <div class="subtraction-row">
+      <span class="subtraction-label">Order costs:</span>
+      <span class="subtraction-number">- $ ${totalDollars} . ${needsBorrowCents ? '<span class="highlight-problem">' + totalCents + '</span>' : totalCents}</span>
+    </div>
+    <div class="subtraction-line"></div>
+    <div class="subtraction-row">
+      <span class="subtraction-label">Your change:</span>
+      <span class="subtraction-result">$ ? ? . ? ?</span>
+    </div>
+  `;
+  
+  if (needsBorrowCents) {
+    html += `<p class="help-hint">💡 Can't take ${totalCents} from ${payCents}! <br>Where can you borrow from? <span class="borrow-arrow">👈</span></p>`;
+  } else {
+    html += `<p class="help-hint">💡 Start with the cents, then do the dollars!</p>`;
+  }
+  
+  document.getElementById("subtractionDisplay").innerHTML = html;
+  document.getElementById("mathHelpPopup").classList.remove("hidden");
+  
+  // Reset mistake counter after showing help
+  mistakeCount = 0;
+}
+
+function closeHelpPopup() {
+  document.getElementById("mathHelpPopup").classList.add("hidden");
+  // Focus back on the input
+  document.getElementById("changeAmount").focus();
+}
+
+
+/* =========================================================
    Keyboard support (Enter submits for math inputs)
 ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
   const totalInput = document.getElementById("totalInput");
   const changeAmount = document.getElementById("changeAmount");
+  const newPlayerName = document.getElementById("newPlayerName");
 
   if (totalInput) {
     totalInput.addEventListener("keypress", (e) => {
@@ -769,6 +1017,12 @@ document.addEventListener("DOMContentLoaded", () => {
       if (e.key === "Enter") checkChange();
     });
   }
+  
+  if (newPlayerName) {
+    newPlayerName.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") createPlayer();
+    });
+  }
 });
 
 
@@ -778,10 +1032,21 @@ document.addEventListener("DOMContentLoaded", () => {
 ========================================================= */
 window.showLevelSelect = showLevelSelect;
 window.showStart = showStart;
+window.showPlayerSelect = showPlayerSelect;
 window.startLevel = startLevel;
 window.quitToLevelSelect = quitToLevelSelect;
 window.nextLevel = nextLevel;
 window.checkTotal = checkTotal;
+window.checkChange = checkChange;
+window.selectPlayer = selectPlayer;
+window.deletePlayer = deletePlayer;
+window.showNewPlayerForm = showNewPlayerForm;
+window.hideNewPlayerForm = hideNewPlayerForm;
+window.selectColor = selectColor;
+window.createPlayer = createPlayer;
+window.serveItemHunt = serveItemHunt;
+window.showHint = showHint;
+window.closeHelpPopup = closeHelpPopup;
 
 /* ============================================
    LEVEL 1: ITEM HUNT FUNCTIONS
@@ -793,9 +1058,8 @@ function setupLevelMenu(levelNum) {
   const counter = document.querySelector('.counter');
   const customerArea = document.getElementById('customerArea');
   
- if (levelNum === 1 || levelNum === 2) {
-  // Levels 1 & 2: Item Hunt Mode
-  
+  if (levelNum === 1 || levelNum === 2) {
+    // Levels 1 & 2: Item Hunt Mode
     itemHunt.classList.remove('hidden');
     counter.classList.add('hunt-mode');
     customerArea.classList.add('hunt-mode');
@@ -806,110 +1070,66 @@ function setupLevelMenu(levelNum) {
     });
     
   } else {
-    // Levels 3-4: Regular Menu
+    // Levels 3-6: Regular Menu
     itemHunt.classList.add('hidden');
     counter.classList.remove('hunt-mode');
     customerArea.classList.remove('hunt-mode');
     menuItems.classList.remove('hidden');
   }
 }
+
 function serveItemHunt(itemId, imgElement) {
+  const config = levelConfig[currentLevel];
+  
   // Check if this item is in the current order
   const index = currentOrder.findIndex((orderItem) => orderItem.id === itemId);
   const isCorrect = index !== -1;
-
+  
   if (isCorrect) {
+    // Mark item as found
+    imgElement.classList.add('found');
+    
     // Remove from remaining order
     currentOrder.splice(index, 1);
-
-    // Mark item as found (greyed out)
-    imgElement.classList.add('found');
-
-    // Customer reacts happy
+    
+    // Customer is happy
     updateCustomerDisplay("happy");
-
+    
     if (currentOrder.length === 0) {
       // All items found!
-      showFeedback("Perfect! Thank you! 😊", true, true);
+      showFeedback("Perfect! You found everything! 🌟", true);
+      stopTimer();
       
-      // Clear the thought interval
-      if (thoughtInterval) {
-        clearInterval(thoughtInterval);
-        thoughtInterval = null;
-      }
-
       setTimeout(() => {
         score++;
         document.getElementById("score").textContent = score;
-
+        
         if (score >= levelConfig[currentLevel].ordersToWin) {
           showVictory();
         } else {
-          // Reset for next customer
           newCustomer();
         }
-      }, 900);
+      }, 1200);
     } else {
-      // Some items still needed
-      showFeedback("Yes! That's for me!", true, false);
+      // Still more items to find
+      showFeedback("Great! Keep looking! 👀", true);
       setTimeout(() => {
         hideFeedback();
-        updateCustomerDisplay("wait");
       }, 800);
     }
- } else {
-  // Wrong item clicked
-  updateCustomerDisplay("sad");
-  loseLife();  // ← ADD THIS LINE
-  showFeedback("Oh no! That's not what I ordered!", false, false);
-
-  setTimeout(() => {
-    hideFeedback();
-    updateCustomerDisplay("wait");
-  }, 900);
-}
-}
-
-// Make it available to HTML onclick
-window.serveItemHunt = serveItemHunt;
-/* =========================================================
-   Lives System
-========================================================= */
-function updateLivesDisplay() {
-  const livesElement = document.getElementById("lives");
-  if (!livesElement) return;
-  
-  let heartsHTML = "";
-  for (let i = 0; i < lives; i++) {
-    heartsHTML += "❤️ ";
-  }
-  livesElement.innerHTML = heartsHTML || "💔";
-}
-
-function loseLife() {
-  lives--;
-  updateLivesDisplay();
-  
-  if (lives <= 0) {
-    // Game Over - show the game over screen
+  } else {
+    // Wrong item - shake it
+    imgElement.style.animation = 'shake 0.5s';
     setTimeout(() => {
-      showGameOver();
-    }, 1500);
+      imgElement.style.animation = '';
+    }, 500);
+    
+    updateCustomerDisplay("sad");
+    showFeedback("That's not what I ordered! 😢", false);
+    
+    setTimeout(() => {
+      hideFeedback();
+      updateCustomerDisplay("think");
+    }, 900);
   }
 }
-
-/* =========================================================
-   Game Over Screen
-========================================================= */
-function showGameOver() {
-  hideAllScreens();
-  document.getElementById("gameOverScreen").classList.remove("hidden");
-}
-
-function restartLevel() {
-  lives = 4;  // Reset lives for restart
-  startLevel(currentLevel);
-}
-
-// Make functions available globally
-window.restartLevel = restartLevel;

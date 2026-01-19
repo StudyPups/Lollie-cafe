@@ -63,27 +63,19 @@ body {
 }
 
 .back-button, .quit-button {
-  background-color: #82CAFF;
-  color: black;
-  border: 2px solid #5FA8D3;
+  background-color: #888;
+  color: white;
+  border: none;
   padding: 12px 24px;
   font-size: 18px;
   border-radius: 25px;
   cursor: pointer;
   margin-top: 20px;
   font-family: 'Comic Sans MS', cursive;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-  transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
 }
 
 .back-button:hover, .quit-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 8px rgba(0,0,0,0.3);
-  background-color: #5FA8D3;
-}
-
-.back-button:hover, .quit-button:hover {
-  background-color: #a7a7f3
+  background-color: #666;
 }
 
 .quit-button {
@@ -91,6 +83,160 @@ body {
   bottom: 20px;
   right: 20px;
   z-index: 100;
+}
+
+/* Player Select */
+#playerSelect {
+  background: linear-gradient(to bottom, #FFB6D9, #D462FF);
+}
+
+#playerSelect h1 {
+  color: white;
+  font-size: 48px;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.player-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  max-width: 900px;
+  width: 100%;
+  margin-bottom: 30px;
+  padding: 0 20px;
+}
+
+.player-card {
+  background: white;
+  border: 4px solid #F52887;
+  border-radius: 20px;
+  padding: 25px 15px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  font-family: 'Comic Sans MS', cursive;
+  text-align: center;
+  position: relative;
+}
+
+.player-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 20px rgba(0,0,0,0.25);
+  border-color: #FF1493;
+}
+
+.player-card .cup-icon {
+  font-size: 60px;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+}
+
+.player-card .player-name {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin: 10px 0;
+}
+
+.player-card .player-progress {
+  font-size: 14px;
+  color: #666;
+  margin-top: 8px;
+}
+
+.player-card .delete-player {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 16px;
+  cursor: pointer;
+  display: none;
+  line-height: 1;
+  padding: 0;
+}
+
+.player-card:hover .delete-player {
+  display: block;
+}
+
+.player-card .delete-player:hover {
+  background: #cc0000;
+}
+
+/* New Player Form */
+.new-player-form {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 450px;
+  margin: 20px auto;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.new-player-form h3 {
+  color: #F52887;
+  font-size: 28px;
+  margin: 0 0 20px 0;
+  text-align: center;
+}
+
+#newPlayerName {
+  width: 100%;
+  padding: 15px;
+  font-size: 20px;
+  border: 3px solid #F52887;
+  border-radius: 15px;
+  font-family: 'Comic Sans MS', cursive;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.color-picker {
+  margin-bottom: 20px;
+}
+
+.color-picker p {
+  color: #666;
+  font-size: 18px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.color-options {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.color-btn {
+  width: 60px;
+  height: 60px;
+  border: 4px solid transparent;
+  border-radius: 15px;
+  font-size: 32px;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.color-btn:hover {
+  transform: scale(1.1);
+}
+
+.color-btn.selected {
+  border-color: #333;
+  transform: scale(1.15);
+  box-shadow: 0 0 0 3px rgba(51, 51, 51, 0.2);
 }
 
 /* Level Select */
@@ -148,11 +294,34 @@ body {
   font-style: italic;
 }
 
+/* Locked Levels */
+.level-button.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #e0e0e0;
+  border-color: #999;
+}
+
+.level-button.locked:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: #999;
+}
+
+.level-button.locked::after {
+  content: '🔒 Locked';
+  display: block;
+  margin-top: 10px;
+  font-size: 16px;
+  color: #666;
+  font-weight: bold;
+}
+
 /* Game Screen */
 #gameScreen {
   position: relative;
   padding: 0;
-
+  background: #transparent;
   justify-content: flex-start; /* override .screen centering */
 }
 
@@ -321,8 +490,8 @@ body {
 }
 
 .customer-img {
-  width: 400px;
-  height: 400px;
+  width: 250px;
+  height: 250px;
   object-fit: contain;
   margin-bottom: 10px;
   filter: drop-shadow(0 6px 10px rgba(0,0,0,0.14));
@@ -680,40 +849,40 @@ body {
 /* New positions - spread across the WHOLE cafe scene */
 /* Left side items */
 .hidden-item[data-item="coffee"] {
-  top: 37%;
-  left: 17.5%;
+  top: 25%;
+  left: 8%;
 }
 
 .hidden-item[data-item="cookies"] {
-  top: 54.5%;
-  left: 53%;
+  top: 18%;
+  left: 18%;
 }
 
 /* Center items */
 .hidden-item[data-item="donut"] {
-  top: 56%;
-  left: 26%;
+  top: 45%;
+  left: 28%;
 }
 
 .hidden-item[data-item="cupcake"] {
-  top: 48%;
-  left: 32.5%;
+  top: 52%;
+  left: 35%;
 }
 
 .hidden-item[data-item="water"] {
-  top: 56%;
-  left: 10%;
+  top: 30%;
+  left: 42%;
 }
 
 /* Right side items */
 .hidden-item[data-item="milkshake"] {
-  top: 31%;
-  left: 39%;
+  top: 58%;
+  left: 68%;
 }
 
 .hidden-item[data-item="beans"] {
   top: 22%;
-  left: 32%;
+  left: 78%;
 }
 
 /* Customer area modifications for Level 1 */
@@ -760,86 +929,201 @@ body {
     height: 120px;
   }
 }
-/* Welcome Screen Decorations */
-.floating-item-decor {
-  position: absolute;
-  width: 130px;
-  height: 130px;
-  object-fit: contain;
-  animation: gentle-float 3s ease-in-out infinite;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
-}
 
-@keyframes gentle-float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-15px); }
-}
+/* ============================================
+   MATH HELP SYSTEM
+   ============================================ */
 
-.donut-decor {
-  top: 15%;
-  left: 10%;
-  animation-delay: 0s;
-}
-
-.coffee-decor {
-  top: 25%;
-  right: 12%;
-  animation-delay: 0.5s;
-}
-
-.cupcake-decor {
-  bottom: 25%;
-  left: 8%;
-  animation-delay: 1s;
-}
-
-.milkshake-decor {
-  bottom: 20%;
-  right: 10%;
-  animation-delay: 1.5s;
-}
-
-.cookies-decor {
-  top: 35%;
-  left: 5%;
-  animation-delay: 2s;
-}
-
-.beans-decor {
-  top: 45%;
-  right: 7%;
-  animation-delay: 2.5s;
-}
-/* Game Over Screen */
-#gameOverScreen {
-  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-}
-
-#gameOverScreen h1 {
+/* Hint Button (after 1 mistake) */
+.hint-button {
+  background-color: #FFB347;
   color: white;
-  font-size: 56px;
-  text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
-  margin-bottom: 30px;
-}
-
-.gameover-stats {
-  background: white;
-  padding: 30px 50px;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
   border-radius: 20px;
-  margin-bottom: 30px;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  cursor: pointer;
+  margin-top: 12px;
+  font-family: 'Comic Sans MS', cursive;
+  transition: transform 0.2s, background-color 0.2s;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
 }
 
-#gameOverMessage {
-  font-size: 28px;
-  color: #ff6b6b;
-  font-weight: bold;
-  margin: 10px 0;
+.hint-button:hover {
+  background-color: #FFA500;
+  transform: scale(1.05);
 }
 
-.gameover-buttons {
+/* Math Help Popup (after 3 mistakes) */
+.math-help-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 2000;
   display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.math-help-content {
+  background: white;
+  padding: 35px 40px;
+  border-radius: 25px;
+  max-width: 500px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+  text-align: center;
+  animation: slideUp 0.3s;
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.math-help-content h3 {
+  color: #F52887;
+  font-size: 26px;
+  margin: 0 0 25px 0;
+}
+
+/* Subtraction Display */
+.subtraction-display {
+  background: #FFF9E6;
+  border: 3px solid #FFD700;
+  border-radius: 15px;
+  padding: 25px 20px;
+  margin: 20px 0;
+  font-family: 'Courier New', monospace;
+  font-size: 24px;
+  line-height: 1.8;
+  text-align: center;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.subtraction-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 8px 0;
+  font-weight: bold;
+  flex-wrap: nowrap;
+  min-height: 40px;
+}
+
+.subtraction-label {
+  width: 140px;
+  min-width: 140px;
+  text-align: right;
+  margin-right: 10px;
+  font-size: 15px;
+  color: #666;
+  flex-shrink: 0;
+  line-height: 1.3;
+}
+
+.subtraction-number {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 6px;
+  font-size: 26px;
+  color: #333;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.subtraction-line {
+  border-top: 3px solid #333;
+  width: 200px;
+  max-width: 80%;
+  margin: 10px auto;
+}
+
+.subtraction-result {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 6px;
+  font-size: 26px;
+  color: #F52887;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+/* Highlight problem area */
+.highlight-problem {
+  background: #FFEB3B;
+  padding: 2px 6px;
+  border-radius: 5px;
+  animation: pulse-highlight 1.5s infinite;
+}
+
+@keyframes pulse-highlight {
+  0%, 100% { 
+    background: #FFEB3B;
+    box-shadow: 0 0 0 rgba(255, 235, 59, 0);
+  }
+  50% { 
+    background: #FFD700;
+    box-shadow: 0 0 15px rgba(255, 235, 59, 0.6);
+  }
+}
+
+.help-hint {
+  color: #666;
+  font-size: 16px;
+  font-family: 'Comic Sans MS', cursive;
+  margin-top: 15px;
+  font-weight: normal;
+  line-height: 1.5;
+  padding: 0 10px;
+}
+
+.borrow-arrow {
+  font-size: 28px;
+  color: #F52887;
+  margin-left: 10px;
+  animation: bounce-left 1s infinite;
+  display: inline-block;
+}
+
+@keyframes bounce-left {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-8px); }
+}
+
+/* Make popup responsive */
+@media (max-width: 600px) {
+  .math-help-content {
+    padding: 25px 20px;
+    margin: 10px;
+  }
+  
+  .subtraction-label {
+    font-size: 13px;
+    width: 120px;
+    min-width: 120px;
+  }
+  
+  .subtraction-number,
+  .subtraction-result {
+    font-size: 22px;
+    letter-spacing: 4px;
+  }
+  
+  .help-hint {
+    font-size: 15px;
+  }
 }
