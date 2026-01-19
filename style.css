@@ -423,6 +423,11 @@ body {
   gap: 12px;
 }
 
+/* Hide menu items container (not used in current levels) */
+#menuItems {
+  display: none;
+}
+
 .menu-button {
   background: rgba(255,255,255,0.98);
   border: 2px solid rgba(245, 40, 135, 0.55);

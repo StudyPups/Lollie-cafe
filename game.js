@@ -383,10 +383,7 @@ function startLevel(level) {
  // Setup the appropriate menu for this level
 setupLevelMenu(level);
 
-// Build regular menu for levels 3-6 (levels 1-2 use item hunt)
-if (level > 2) {
-  buildMenu(config);
-}
+// Note: Menu removed - Levels 1-2 use item hunt, Levels 3+ use order summary only
 
   // Hide special UI panels (math/change)
   document.getElementById("orderSummary").classList.add("hidden");
@@ -774,6 +771,9 @@ function showMathChallenge() {
   // Reset mistake counter for new question
   mistakeCount = 0;
   document.getElementById("hintButton").classList.add("hidden");
+  
+  // Hide counter title (no menu in math levels)
+  document.getElementById("counterTitle").style.display = "none";
 
   // Build order list
   const orderList = document.getElementById("orderList");
@@ -1054,15 +1054,16 @@ window.closeHelpPopup = closeHelpPopup;
 
 function setupLevelMenu(levelNum) {
   const itemHunt = document.getElementById('itemHuntContainer');
-  const menuItems = document.getElementById('menuItems');
   const counter = document.querySelector('.counter');
   const customerArea = document.getElementById('customerArea');
+  const counterTitle = document.getElementById('counterTitle');
   
   if (levelNum === 1 || levelNum === 2) {
     // Levels 1 & 2: Item Hunt Mode
     itemHunt.classList.remove('hidden');
     counter.classList.add('hunt-mode');
     customerArea.classList.add('hunt-mode');
+    counterTitle.style.display = "none"; // Hide title in hunt mode
     
     // Reset all items
     document.querySelectorAll('.hidden-item').forEach(item => {
@@ -1070,11 +1071,12 @@ function setupLevelMenu(levelNum) {
     });
     
   } else {
-    // Levels 3-6: Regular Menu
+    // Levels 3-6: No item hunt, no menu (just order summary for math)
     itemHunt.classList.add('hidden');
     counter.classList.remove('hunt-mode');
     customerArea.classList.remove('hunt-mode');
-    menuItems.classList.remove('hidden');
+    counterTitle.style.display = "none"; // Hide title in math mode too
+    // Don't show menu anymore - order summary handles it
   }
 }
 
