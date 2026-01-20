@@ -31,6 +31,10 @@ let currentHintLevel = 0;       // 0 = no hint, 1 = basic, 2 = detailed, 3 = ste
 let stepByStepAnswers = [];     // stores the correct answers for each step
 let currentStep = 0;            // tracks which step we're on
 
+// Progressive difficulty system
+let orderCount = 0;             // tracks how many orders completed in current level
+let isLunchRush = false;        // whether we're in the harder "lunch rush" phase
+
 /* ---------------------------
    Player Profile System
 --------------------------- */
@@ -168,7 +172,8 @@ const levelConfig = {
     showPrices: true,
     mathMode: true,
     changeMode: false,
-    ordersToWin: 5
+    ordersToWin: 10,  // 5 morning + 5 lunch rush
+    lunchRushAt: 6    // lunch rush starts at order 6
   },
   4: {
     title: "Level 4: Master Challenge",
@@ -179,7 +184,8 @@ const levelConfig = {
     showPrices: true,
     mathMode: true,
     changeMode: true,
-    ordersToWin: 5
+    ordersToWin: 10,  // 5 morning + 5 lunch rush
+    lunchRushAt: 6    // lunch rush starts at order 6
   }
 };
 
@@ -374,6 +380,8 @@ function startLevel(level) {
   
   currentLevel = level;
   score = 0;
+  orderCount = 0;       // Reset order counter
+  isLunchRush = false;  // Start in morning phase
   // Don't reset lives here - they carry over between levels
 
   const config = levelConfig[level];
@@ -479,6 +487,61 @@ function unlockMenuButton(buttonEl) {
 
 
 /* =========================================================
+   Order Generation with Progressive Difficulty
+========================================================= */
+function generateOrder(config) {
+  // Determine difficulty phase
+  const lunchRushAt = config.lunchRushAt || 999;
+  isLunchRush = orderCount >= lunchRushAt;
+  
+  let orderSize;
+  let allowDuplicates = false;
+  
+  if (config.mathMode) {
+    // Math levels have progressive difficulty
+    if (isLunchRush) {
+      // Lunch Rush: harder orders
+      orderSize = randInt(3, 4);
+      allowDuplicates = true;
+    } else {
+      // Morning: easier orders
+      orderSize = randInt(2, 3);
+      allowDuplicates = false;
+    }
+  } else {
+    // Non-math levels use config orderSize
+    orderSize = randInt(config.orderSize[0], config.orderSize[1]);
+    allowDuplicates = false;
+  }
+  
+  // Generate order
+  if (allowDuplicates) {
+    // Can have duplicate items (e.g., Coffee × 2)
+    const order = [];
+    const availableItems = [...items];
+    
+    for (let i = 0; i < orderSize; i++) {
+      const randomItem = availableItems[Math.floor(Math.random() * availableItems.length)];
+      
+      // Check if this item is already in the order
+      const existing = order.find(orderItem => orderItem.id === randomItem.id);
+      if (existing) {
+        existing.quantity++;
+      } else {
+        order.push({ ...randomItem, quantity: 1 });
+      }
+    }
+    
+    return order;
+  } else {
+    // Unique items only (no duplicates)
+    const shuffled = [...items].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, orderSize).map(item => ({ ...item, quantity: 1 }));
+  }
+}
+
+
+/* =========================================================
    Customer + Order Management
 ========================================================= */
 function newCustomer() {
@@ -493,6 +556,13 @@ function newCustomer() {
     document.querySelectorAll('.hidden-item').forEach(item => {
       item.classList.remove('found');
     });
+  }
+  
+  // Check if it's time for lunch rush popup
+  if (config.lunchRushAt && orderCount === config.lunchRushAt - 1) {
+    // Show lunch rush popup before next order
+    showLunchRushPopup();
+    return; // Will call newCustomer again after popup
   }
 
   // Pick random customer
@@ -510,11 +580,9 @@ function newCustomer() {
     customerEl.classList.add("enter");
   }
 
-  // Generate a UNIQUE order (no duplicates)
-  const orderSize = randInt(config.orderSize[0], config.orderSize[1]);
-  const shuffled = [...items].sort(() => Math.random() - 0.5);
-  fullOrderSnapshot = shuffled.slice(0, orderSize);
-  currentOrder = [...fullOrderSnapshot]; // mutable copy for serving
+  // Generate order using new progressive difficulty system
+  fullOrderSnapshot = generateOrder(config);
+  currentOrder = fullOrderSnapshot.map(item => ({ ...item })); // deep copy for serving
 
   // Show order
   if (config.mathMode) {
@@ -789,20 +857,32 @@ function showMathChallenge() {
   // Hide counter title (no menu in math levels)
   document.getElementById("counterTitle").style.display = "none";
 
-  // Build order list
+  // Build order list with quantities
   const orderList = document.getElementById("orderList");
   orderList.innerHTML = "";
 
   let total = 0;
   fullOrderSnapshot.forEach((item) => {
-    total += item.price;
+    const subtotal = item.price * item.quantity;
+    total += subtotal;
 
     const row = document.createElement("div");
     row.className = "order-item";
-    row.innerHTML = `
-      <span>${item.name}</span>
-      <span>$${item.price.toFixed(2)}</span>
-    `;
+    
+    if (item.quantity > 1) {
+      // Show quantity and subtotal
+      row.innerHTML = `
+        <span>${item.name} × ${item.quantity}</span>
+        <span>$${item.price.toFixed(2)} ea → $${subtotal.toFixed(2)}</span>
+      `;
+    } else {
+      // Single item
+      row.innerHTML = `
+        <span>${item.name}</span>
+        <span>$${item.price.toFixed(2)}</span>
+      `;
+    }
+    
     orderList.appendChild(row);
   });
 
@@ -843,7 +923,7 @@ function showMathChallenge() {
 
 function checkTotal() {
   const userAnswer = parseFloat(document.getElementById("totalInput").value);
-  const correctTotal = fullOrderSnapshot.reduce((sum, item) => sum + item.price, 0);
+  const correctTotal = fullOrderSnapshot.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
   if (Number.isNaN(userAnswer)) {
     showFeedback("Type a number first 😊", false);
@@ -859,7 +939,7 @@ function checkTotal() {
 
 function checkChange() {
   const userChange = parseFloat(document.getElementById("changeAmount").value);
-  const total = fullOrderSnapshot.reduce((sum, item) => sum + item.price, 0);
+  const total = fullOrderSnapshot.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const payment = parseFloat(document.getElementById("customerPayment").textContent);
   const correctChange = payment - total;
 
@@ -885,6 +965,7 @@ function handleMathCorrect() {
 
   setTimeout(() => {
     score++;
+    orderCount++; // Increment order counter
     document.getElementById("score").textContent = score;
 
     if (score >= levelConfig[currentLevel].ordersToWin) {
@@ -951,6 +1032,21 @@ function randInt(min, max) {
 
 
 /* =========================================================
+   Lunch Rush System
+========================================================= */
+function showLunchRushPopup() {
+  document.getElementById("lunchRushPopup").classList.remove("hidden");
+}
+
+function continueLunchRush() {
+  document.getElementById("lunchRushPopup").classList.add("hidden");
+  isLunchRush = true;
+  orderCount++; // Count this as moving to the lunch rush phase
+  newCustomer(); // Start the next (harder) customer
+}
+
+
+/* =========================================================
    Math Help System - Multi-Level Hints
 ========================================================= */
 function showHint() {
@@ -971,7 +1067,7 @@ function showNextHint() {
 
 function showMathHelpPopup() {
   // Show hint level 1 - basic visual layout
-  const total = fullOrderSnapshot.reduce((sum, item) => sum + item.price, 0);
+  const total = fullOrderSnapshot.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const payment = parseFloat(document.getElementById("customerPayment").textContent);
   
   // Format numbers for display
@@ -1024,7 +1120,7 @@ function showMathHelpPopup() {
 
 function showHintLevel2() {
   // HINT LEVEL 2 - Show borrowing process more explicitly
-  const total = fullOrderSnapshot.reduce((sum, item) => sum + item.price, 0);
+  const total = fullOrderSnapshot.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const payment = parseFloat(document.getElementById("customerPayment").textContent);
   
   const paymentStr = payment.toFixed(2);
@@ -1097,7 +1193,7 @@ function showStepByStepMode() {
   // HINT LEVEL 3 - Interactive step-by-step
   currentStep = 0;
   
-  const total = fullOrderSnapshot.reduce((sum, item) => sum + item.price, 0);
+  const total = fullOrderSnapshot.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const payment = parseFloat(document.getElementById("customerPayment").textContent);
   const correctChange = payment - total;
   
@@ -1379,6 +1475,7 @@ window.checkStep = checkStep;
 window.checkStepYesNo = checkStepYesNo;
 window.nextStepAfterInfo = nextStepAfterInfo;
 window.acceptStepByStepAnswer = acceptStepByStepAnswer;
+window.continueLunchRush = continueLunchRush;
 
 /* ============================================
    LEVEL 1: ITEM HUNT FUNCTIONS

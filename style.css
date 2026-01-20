@@ -705,6 +705,55 @@ body {
   background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
 }
 
+/* Lunch Rush Popup */
+.lunch-rush-content {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  padding: 40px;
+  border-radius: 25px;
+  max-width: 500px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+  text-align: center;
+  animation: slideUp 0.3s;
+  border: 5px solid #FF8C00;
+}
+
+.lunch-rush-content h1 {
+  color: white;
+  font-size: 42px;
+  text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+  margin: 0 0 25px 0;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.lunch-rush-message {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  font-size: 22px;
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.lunch-rush-message strong {
+  color: #F52887;
+  font-size: 24px;
+}
+
+.lunch-rush-encouragement {
+  font-size: 28px;
+  color: white;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  margin-bottom: 25px;
+}
+
 #gameOverScreen h1 {
   color: white;
   font-size: 56px;
