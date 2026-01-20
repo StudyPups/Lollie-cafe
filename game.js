@@ -14,6 +14,7 @@
 --------------------------- */
 let currentLevel = 1;
 let score = 0;
+let lives = 4;  // Lives system
 
 let currentCustomer = null;
 let currentOrder = [];          // array of item objects still needed
@@ -26,6 +27,9 @@ let orderRevealTimeout = null;  // used to hide order after a delay
 
 // Math help system
 let mistakeCount = 0;           // tracks wrong attempts on current question
+let currentHintLevel = 0;       // 0 = no hint, 1 = basic, 2 = detailed, 3 = step-by-step
+let stepByStepAnswers = [];     // stores the correct answers for each step
+let currentStep = 0;            // tracks which step we're on
 
 /* ---------------------------
    Player Profile System
@@ -233,6 +237,11 @@ function showVictory() {
   else nextBtn.classList.add("hidden");
 }
 
+function showGameOver() {
+  hideAllScreens();
+  document.getElementById("gameOverScreen").classList.remove("hidden");
+}
+
 
 /* =========================================================
    Player UI Functions
@@ -273,6 +282,7 @@ function displayPlayerList() {
 
 function selectPlayer(playerName) {
   currentPlayer = playerName;
+  lives = 4;  // Reset lives when selecting a player
   showLevelSelect();
 }
 
@@ -364,6 +374,7 @@ function startLevel(level) {
   
   currentLevel = level;
   score = 0;
+  // Don't reset lives here - they carry over between levels
 
   const config = levelConfig[level];
 
@@ -374,6 +385,7 @@ function startLevel(level) {
   // Update header
   document.getElementById("levelTitle").textContent = config.title;
   document.getElementById("score").textContent = score;
+  updateLivesDisplay();  // Update lives display
 
   // Timer UI
   const timerDisplay = document.getElementById("timerDisplay");
@@ -620,6 +632,7 @@ function handleTimeout() {
   // You can add penalties/lives later if you want.
   updateCustomerDisplay("sad");
   showFeedback("Time’s up! Too slow!", false);
+  loseLife();  // Lose a life for running out of time
 
   // Re-enable menu in case we were mid-reveal
   setMenuEnabled(true);
@@ -768,8 +781,9 @@ function flyImageFromButtonToCustomer(buttonEl, imgSrc, altText, onArrive) {
 function showMathChallenge() {
   const config = levelConfig[currentLevel];
   
-  // Reset mistake counter for new question
+  // Reset mistake counter and hint level for new question
   mistakeCount = 0;
+  currentHintLevel = 0;
   document.getElementById("hintButton").classList.add("hidden");
   
   // Hide counter title (no menu in math levels)
@@ -937,22 +951,32 @@ function randInt(min, max) {
 
 
 /* =========================================================
-   Math Help System
+   Math Help System - Multi-Level Hints
 ========================================================= */
 function showHint() {
-  // Just show the popup when they click the hint button
+  // Show hint level 1 when they click the hint button
+  currentHintLevel = 1;
   showMathHelpPopup();
 }
 
+function showNextHint() {
+  // Progress to next hint level
+  currentHintLevel++;
+  if (currentHintLevel === 2) {
+    showHintLevel2();
+  } else if (currentHintLevel >= 3) {
+    showStepByStepMode();
+  }
+}
+
 function showMathHelpPopup() {
+  // Show hint level 1 - basic visual layout
   const total = fullOrderSnapshot.reduce((sum, item) => sum + item.price, 0);
   const payment = parseFloat(document.getElementById("customerPayment").textContent);
-  const correctChange = payment - total;
   
   // Format numbers for display
   const paymentStr = payment.toFixed(2);
   const totalStr = total.toFixed(2);
-  const changeStr = correctChange.toFixed(2);
   
   // Split into dollars and cents for highlighting
   const [payDollars, payCents] = paymentStr.split('.');
@@ -961,7 +985,7 @@ function showMathHelpPopup() {
   // Check if borrowing is needed in cents column
   const needsBorrowCents = parseInt(payCents) < parseInt(totalCents);
   
-  // Build the visual subtraction display
+  // Build the visual subtraction display - HINT LEVEL 1
   let html = `
     <div class="subtraction-row">
       <span class="subtraction-label">Customer pays:</span>
@@ -984,11 +1008,281 @@ function showMathHelpPopup() {
     html += `<p class="help-hint">💡 Start with the cents, then do the dollars!</p>`;
   }
   
-  document.getElementById("subtractionDisplay").innerHTML = html;
+  document.getElementById("hintVisual").innerHTML = html;
+  document.getElementById("hintVisual").classList.remove("hidden");
+  document.getElementById("stepByStep").classList.add("hidden");
+  document.getElementById("hintTitle").textContent = "Let's work through this together! ✨";
+  
+  // Show "another hint" button for level 1
+  document.getElementById("anotherHintBtn").classList.remove("hidden");
+  document.getElementById("gotItBtn").textContent = "Got it!";
+  
   document.getElementById("mathHelpPopup").classList.remove("hidden");
   
-  // Reset mistake counter after showing help
-  mistakeCount = 0;
+  // Don't reset mistake counter - they're using a hint, not making mistakes
+}
+
+function showHintLevel2() {
+  // HINT LEVEL 2 - Show borrowing process more explicitly
+  const total = fullOrderSnapshot.reduce((sum, item) => sum + item.price, 0);
+  const payment = parseFloat(document.getElementById("customerPayment").textContent);
+  
+  const paymentStr = payment.toFixed(2);
+  const totalStr = total.toFixed(2);
+  
+  const [payDollars, payCents] = paymentStr.split('.');
+  const [totalDollars, totalCents] = totalStr.split('.');
+  
+  const needsBorrowCents = parseInt(payCents) < parseInt(totalCents);
+  
+  if (needsBorrowCents) {
+    // Show the borrowing process
+    const newDollars = parseInt(payDollars) - 1;
+    const newCents = 100 + parseInt(payCents);
+    
+    let html = `
+      <div class="help-hint" style="margin-bottom: 15px;">
+        <strong>Let's borrow from the dollars!</strong><br>
+        We take 1 dollar (100 cents) and add it to the cents column:
+      </div>
+      <div class="subtraction-row">
+        <span class="subtraction-label">Customer pays:</span>
+        <span class="subtraction-number">$ <span style="text-decoration: line-through;">${payDollars}</span> <span class="highlight-problem">${newDollars}</span> . <span style="text-decoration: line-through;">${payCents}</span> <span class="highlight-problem">${newCents}</span></span>
+      </div>
+      <div class="subtraction-row">
+        <span class="subtraction-label">Order costs:</span>
+        <span class="subtraction-number">- $ ${totalDollars} . ${totalCents}</span>
+      </div>
+      <div class="subtraction-line"></div>
+      <div class="subtraction-row">
+        <span class="subtraction-label">Now calculate:</span>
+        <span class="subtraction-result">$ ? ? . ? ?</span>
+      </div>
+      <div class="help-hint" style="margin-top: 15px;">
+        Now you can do ${newCents} - ${totalCents} in the cents!<br>
+        And ${newDollars} - ${totalDollars} in the dollars!
+      </div>
+    `;
+    
+    document.getElementById("hintVisual").innerHTML = html;
+  } else {
+    // No borrowing needed - just show the calculation
+    let html = `
+      <div class="help-hint" style="margin-bottom: 15px;">
+        <strong>This one is straightforward - no borrowing needed!</strong>
+      </div>
+      <div class="subtraction-row">
+        <span class="subtraction-label">Cents:</span>
+        <span class="subtraction-number">${payCents} - ${totalCents} = ?</span>
+      </div>
+      <div class="subtraction-row">
+        <span class="subtraction-label">Dollars:</span>
+        <span class="subtraction-number">${payDollars} - ${totalDollars} = ?</span>
+      </div>
+      <div class="help-hint" style="margin-top: 15px;">
+        Put them together for your answer!
+      </div>
+    `;
+    
+    document.getElementById("hintVisual").innerHTML = html;
+  }
+  
+  document.getElementById("hintTitle").textContent = "Here's more help! 💡";
+  
+  // Change button to "Show me step-by-step"
+  document.getElementById("anotherHintBtn").textContent = "Show me step-by-step!";
+}
+
+function showStepByStepMode() {
+  // HINT LEVEL 3 - Interactive step-by-step
+  currentStep = 0;
+  
+  const total = fullOrderSnapshot.reduce((sum, item) => sum + item.price, 0);
+  const payment = parseFloat(document.getElementById("customerPayment").textContent);
+  const correctChange = payment - total;
+  
+  const paymentStr = payment.toFixed(2);
+  const totalStr = total.toFixed(2);
+  
+  const [payDollars, payCents] = paymentStr.split('.');
+  const [totalDollars, totalCents] = totalStr.split('.');
+  
+  const needsBorrowCents = parseInt(payCents) < parseInt(totalCents);
+  
+  // Build the steps
+  stepByStepAnswers = [];
+  
+  if (needsBorrowCents) {
+    // With borrowing
+    const newCents = 100 + parseInt(payCents);
+    const newDollars = parseInt(payDollars) - 1;
+    const centResult = newCents - parseInt(totalCents);
+    const dollarResult = newDollars - parseInt(totalDollars);
+    
+    stepByStepAnswers = [
+      { question: `First, can we do ${payCents} - ${totalCents} in the cents?`, answer: "no", type: "yesno" },
+      { question: `Let's borrow! ${payCents} becomes ${newCents}, and ${payDollars} becomes ${newDollars}`, answer: "ok", type: "info" },
+      { question: `Now: ${newCents} - ${totalCents} = ?`, answer: centResult, type: "number" },
+      { question: `And: ${newDollars} - ${totalDollars} = ?`, answer: dollarResult, type: "number" },
+      { question: `So the change is: $${dollarResult}.${centResult.toString().padStart(2, '0')}`, answer: correctChange.toFixed(2), type: "final" }
+    ];
+  } else {
+    // No borrowing needed
+    const centResult = parseInt(payCents) - parseInt(totalCents);
+    const dollarResult = parseInt(payDollars) - parseInt(totalDollars);
+    
+    stepByStepAnswers = [
+      { question: `Cents: ${payCents} - ${totalCents} = ?`, answer: centResult, type: "number" },
+      { question: `Dollars: ${payDollars} - ${totalDollars} = ?`, answer: dollarResult, type: "number" },
+      { question: `So the change is: $${dollarResult}.${centResult.toString().padStart(2, '0')}`, answer: correctChange.toFixed(2), type: "final" }
+    ];
+  }
+  
+  // Hide visual, show step-by-step
+  document.getElementById("hintVisual").classList.add("hidden");
+  document.getElementById("stepByStep").classList.remove("hidden");
+  document.getElementById("anotherHintBtn").classList.add("hidden");
+  document.getElementById("gotItBtn").classList.add("hidden");
+  
+  document.getElementById("hintTitle").textContent = "Let's do this step-by-step! 🌟";
+  
+  showNextStep();
+}
+
+function showNextStep() {
+  if (currentStep >= stepByStepAnswers.length) {
+    // All steps complete!
+    completeStepByStep();
+    return;
+  }
+  
+  const step = stepByStepAnswers[currentStep];
+  const stepContent = document.getElementById("stepContent");
+  
+  let html = `
+    <div class="step-instruction">Step ${currentStep + 1}:</div>
+    <div class="step-question">${step.question}</div>
+  `;
+  
+  if (step.type === "number") {
+    html += `
+      <div style="text-align: center; margin: 15px 0;">
+        <input type="number" id="stepAnswer" class="step-input" />
+        <button onclick="checkStep()" class="step-check-btn">Check ✓</button>
+      </div>
+      <div id="stepFeedback" class="step-feedback hidden"></div>
+    `;
+  } else if (step.type === "yesno") {
+    html += `
+      <div style="text-align: center; margin: 15px 0;">
+        <button onclick="checkStepYesNo('yes')" class="step-check-btn" style="margin: 5px;">Yes</button>
+        <button onclick="checkStepYesNo('no')" class="step-check-btn" style="margin: 5px;">No</button>
+      </div>
+      <div id="stepFeedback" class="step-feedback hidden"></div>
+    `;
+  } else if (step.type === "info") {
+    html += `
+      <div style="text-align: center; margin: 15px 0;">
+        <button onclick="nextStepAfterInfo()" class="step-check-btn">Got it! →</button>
+      </div>
+    `;
+  } else if (step.type === "final") {
+    html += `
+      <div style="text-align: center; margin: 15px 0;">
+        <button onclick="acceptStepByStepAnswer()" class="step-check-btn" style="background: #FFD700; color: #333;">Use this answer! ⭐</button>
+      </div>
+    `;
+  }
+  
+  stepContent.innerHTML = html;
+  
+  // Focus on input if it exists
+  const input = document.getElementById("stepAnswer");
+  if (input) {
+    input.focus();
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") checkStep();
+    });
+  }
+}
+
+function checkStep() {
+  const userAnswer = parseFloat(document.getElementById("stepAnswer").value);
+  const correctAnswer = stepByStepAnswers[currentStep].answer;
+  const feedback = document.getElementById("stepFeedback");
+  
+  if (Number.isNaN(userAnswer)) {
+    feedback.textContent = "Please enter a number!";
+    feedback.className = "step-feedback wrong";
+    feedback.classList.remove("hidden");
+    return;
+  }
+  
+  if (Math.abs(userAnswer - correctAnswer) < 0.01) {
+    feedback.textContent = "Perfect! ⭐";
+    feedback.className = "step-feedback correct";
+    feedback.classList.remove("hidden");
+    
+    setTimeout(() => {
+      currentStep++;
+      showNextStep();
+    }, 1000);
+  } else {
+    feedback.textContent = `Not quite. Try again! (Hint: ${correctAnswer})`;
+    feedback.className = "step-feedback wrong";
+    feedback.classList.remove("hidden");
+  }
+}
+
+function checkStepYesNo(answer) {
+  const correctAnswer = stepByStepAnswers[currentStep].answer;
+  const feedback = document.getElementById("stepFeedback");
+  
+  if (answer === correctAnswer) {
+    feedback.textContent = "Exactly right! 🌟";
+    feedback.className = "step-feedback correct";
+    feedback.classList.remove("hidden");
+    
+    setTimeout(() => {
+      currentStep++;
+      showNextStep();
+    }, 1000);
+  } else {
+    feedback.textContent = `Not quite - the answer is "${correctAnswer}"`;
+    feedback.className = "step-feedback wrong";
+    feedback.classList.remove("hidden");
+    
+    setTimeout(() => {
+      currentStep++;
+      showNextStep();
+    }, 2000);
+  }
+}
+
+function nextStepAfterInfo() {
+  currentStep++;
+  showNextStep();
+}
+
+function acceptStepByStepAnswer() {
+  // They completed all steps! Accept the answer
+  const correctChange = stepByStepAnswers[stepByStepAnswers.length - 1].answer;
+  
+  // Close popup
+  closeHelpPopup();
+  
+  // Fill in the answer and submit it
+  document.getElementById("changeAmount").value = correctChange;
+  
+  // Trigger correct answer
+  setTimeout(() => {
+    handleMathCorrect();
+  }, 300);
+}
+
+function completeStepByStep() {
+  // This shouldn't happen, but just in case
+  acceptStepByStepAnswer();
 }
 
 function closeHelpPopup() {
@@ -1027,6 +1321,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 /* =========================================================
+   Lives System
+========================================================= */
+function updateLivesDisplay() {
+  const livesElement = document.getElementById("lives");
+  if (!livesElement) return;
+  
+  let heartsHTML = "";
+  for (let i = 0; i < lives; i++) {
+    heartsHTML += "❤️ ";
+  }
+  livesElement.innerHTML = heartsHTML || "💔";
+}
+
+function loseLife() {
+  lives--;
+  updateLivesDisplay();
+  
+  if (lives <= 0) {
+    // Game Over - show the game over screen
+    setTimeout(() => {
+      showGameOver();
+    }, 1500);
+  }
+}
+
+function restartLevel() {
+  lives = 4;  // Reset lives for restart
+  startLevel(currentLevel);
+}
+
+
+/* =========================================================
    Make functions available to inline onclick handlers
    (your HTML uses onclick="showLevelSelect()" etc.)
 ========================================================= */
@@ -1046,7 +1372,13 @@ window.selectColor = selectColor;
 window.createPlayer = createPlayer;
 window.serveItemHunt = serveItemHunt;
 window.showHint = showHint;
+window.showNextHint = showNextHint;
 window.closeHelpPopup = closeHelpPopup;
+window.restartLevel = restartLevel;
+window.checkStep = checkStep;
+window.checkStepYesNo = checkStepYesNo;
+window.nextStepAfterInfo = nextStepAfterInfo;
+window.acceptStepByStepAnswer = acceptStepByStepAnswer;
 
 /* ============================================
    LEVEL 1: ITEM HUNT FUNCTIONS
@@ -1127,6 +1459,7 @@ function serveItemHunt(itemId, imgElement) {
     }, 500);
     
     updateCustomerDisplay("sad");
+    loseLife();  // Lose a life for wrong answer
     showFeedback("That's not what I ordered! 😢", false);
     
     setTimeout(() => {

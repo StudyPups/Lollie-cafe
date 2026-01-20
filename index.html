@@ -88,6 +88,7 @@
         <p id="levelTitle">Level 1: Memory Challenge</p>
       </div>
       <div class="header-right">
+        <p id="lives">❤️ ❤️ ❤️ ❤️</p>
         <p>Score: <span id="score">0</span></p>
         <p id="timerDisplay" class="hidden">Time: <span id="timer">60</span>s</p>
       </div>
@@ -169,17 +170,43 @@
     <!-- Math Help Popup (appears after 3 mistakes) -->
     <div id="mathHelpPopup" class="math-help-popup hidden">
       <div class="math-help-content">
-        <h3>Let's work through this together! ✨</h3>
-        <div id="subtractionDisplay" class="subtraction-display">
+        <h3 id="hintTitle">Let's work through this together! ✨</h3>
+        
+        <!-- Hint Level 1 & 2: Visual breakdown -->
+        <div id="hintVisual" class="subtraction-display">
           <!-- JavaScript will fill this in -->
         </div>
-        <button onclick="closeHelpPopup()" class="big-button secondary" type="button">Got it!</button>
+        
+        <!-- Hint Level 3: Step-by-step mode -->
+        <div id="stepByStep" class="step-by-step hidden">
+          <div id="stepContent">
+            <!-- Steps will be added dynamically -->
+          </div>
+        </div>
+        
+        <div class="hint-buttons">
+          <button id="anotherHintBtn" onclick="showNextHint()" class="big-button secondary hidden" type="button">Give me another hint! 💡</button>
+          <button id="gotItBtn" onclick="closeHelpPopup()" class="big-button secondary" type="button">Got it!</button>
+        </div>
       </div>
     </div>
 
     <div id="feedback" class="feedback hidden"></div>
 
     <button onclick="quitToLevelSelect()" class="quit-button" type="button">Quit Level</button>
+  </div>
+
+  <!-- Game Over Screen -->
+  <div id="gameOverScreen" class="screen hidden">
+    <h1>💔 Oh No! 💔</h1>
+    <div class="gameover-message">
+      <p>You ran out of lives!</p>
+      <p>But don't worry - you can try again! 💪</p>
+    </div>
+    <div class="gameover-buttons">
+      <button onclick="restartLevel()" class="big-button" type="button">Try Again</button>
+      <button onclick="showLevelSelect()" class="big-button secondary" type="button">Level Select</button>
+    </div>
   </div>
 
   <!-- Victory Screen -->

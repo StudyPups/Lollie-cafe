@@ -379,6 +379,11 @@ body {
   font-size: 26px;
 }
 
+#lives {
+  font-size: 20px;
+  margin: 5px 0;
+}
+
 #timer {
   font-weight: bold;
   color: #FF6347;
@@ -693,6 +698,40 @@ body {
   font-size: 56px;
   text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
   margin-bottom: 30px;
+}
+
+/* Game Over Screen */
+#gameOverScreen {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+}
+
+#gameOverScreen h1 {
+  color: white;
+  font-size: 56px;
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+  margin-bottom: 30px;
+  animation: shake 0.5s;
+}
+
+.gameover-message {
+  background: white;
+  padding: 30px 50px;
+  border-radius: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.gameover-message p {
+  font-size: 24px;
+  margin: 10px 0;
+  color: #333;
+}
+
+.gameover-buttons {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .victory-stats {
@@ -1109,6 +1148,87 @@ body {
   50% { transform: translateX(-8px); }
 }
 
+/* Step-by-Step Mode */
+.step-by-step {
+  background: #F0F8FF;
+  border: 3px solid #4169E1;
+  border-radius: 15px;
+  padding: 20px;
+  margin: 20px 0;
+  font-family: 'Comic Sans MS', cursive;
+}
+
+.step-instruction {
+  font-size: 18px;
+  color: #333;
+  margin: 15px 0 10px 0;
+  font-weight: bold;
+}
+
+.step-question {
+  font-size: 20px;
+  color: #F52887;
+  margin: 10px 0;
+  padding: 10px;
+  background: white;
+  border-radius: 10px;
+  font-family: 'Courier New', monospace;
+}
+
+.step-input {
+  font-size: 24px;
+  padding: 10px 15px;
+  border: 3px solid #F52887;
+  border-radius: 10px;
+  width: 100px;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+  margin: 10px;
+}
+
+.step-check-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 18px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-family: 'Comic Sans MS', cursive;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.step-check-btn:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
+
+.step-feedback {
+  font-size: 18px;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.step-feedback.correct {
+  background: #90EE90;
+  color: #006400;
+}
+
+.step-feedback.wrong {
+  background: #FFB6C6;
+  color: #8B0000;
+}
+
+.hint-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
 /* Make popup responsive */
 @media (max-width: 600px) {
   .math-help-content {
@@ -1130,5 +1250,10 @@ body {
   
   .help-hint {
     font-size: 15px;
+  }
+  
+  .step-input {
+    width: 80px;
+    font-size: 20px;
   }
 }
