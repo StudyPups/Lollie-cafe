@@ -35,6 +35,75 @@ let currentStep = 0;            // tracks which step we're on
 let orderCount = 0;             // tracks how many orders completed in current level
 let isLunchRush = false;        // whether we're in the harder "lunch rush" phase
 
+// Sound system
+let soundEnabled = true;        // whether sounds are on or off
+const sounds = {
+  customerEnter: new Audio('sounds/customer-enter.mp3'),
+  correct: new Audio('sounds/correct.mp3'),
+  wrong: new Audio('sounds/wrong.mp3'),
+  itemFound: new Audio('sounds/item-found.mp3'),
+  cashRegister: new Audio('sounds/cash-register.mp3'),
+  levelComplete: new Audio('sounds/level-complete.mp3'),
+  lunchRush: new Audio('sounds/lunch-rush.mp3'),
+  loseLife: new Audio('sounds/lose-life.mp3')
+};
+
+// Set default volume for all sounds
+Object.values(sounds).forEach(sound => {
+  sound.volume = 0.5; // 50% volume
+});
+
+// Background music (separate because it loops)
+const backgroundMusic = new Audio('sounds/background-music.mp3');
+backgroundMusic.loop = true;
+backgroundMusic.volume = 0.3; // Quieter than sound effects
+
+/* =========================================================
+   Sound System
+========================================================= */
+function playSound(soundName) {
+  if (!soundEnabled) return;
+  
+  const sound = sounds[soundName];
+  if (sound) {
+    sound.currentTime = 0; // Reset to start
+    sound.play().catch(e => {
+      // Ignore errors (happens if sounds aren't loaded yet)
+      console.log('Sound not available:', soundName);
+    });
+  }
+}
+
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  const btn = document.getElementById('soundToggle');
+  if (btn) {
+    btn.textContent = soundEnabled ? '🔊' : '🔇';
+  }
+  
+  // Stop background music if sound is disabled
+  if (!soundEnabled) {
+    backgroundMusic.pause();
+  } else {
+    // Optionally restart background music
+    // backgroundMusic.play().catch(e => console.log('Music not available'));
+  }
+}
+
+function toggleMusic() {
+  if (backgroundMusic.paused) {
+    backgroundMusic.play().catch(e => console.log('Music not available'));
+  } else {
+    backgroundMusic.pause();
+  }
+  
+  const btn = document.getElementById('musicToggle');
+  if (btn) {
+    btn.textContent = backgroundMusic.paused ? '🎵' : '🎶';
+  }
+}
+
+
 /* ---------------------------
    Player Profile System
 --------------------------- */
@@ -224,6 +293,7 @@ function showGame() {
 
 function showVictory() {
   hideAllScreens();
+  playSound("levelComplete"); // Sound: Victory!
   document.getElementById("victoryScreen").classList.remove("hidden");
   document.getElementById("finalScore").textContent = score;
 
@@ -419,8 +489,12 @@ setupLevelMenu(level);
 }
 
 function nextLevel() {
-  if (currentLevel < 4) startLevel(currentLevel + 1);
-  else showLevelSelect();
+  if (currentLevel < 4) {
+    // Show promotion popup instead of directly starting next level
+    showPromotionPopup(currentLevel + 1);
+  } else {
+    showLevelSelect();
+  }
 }
 
 function quitToLevelSelect() {
@@ -578,6 +652,7 @@ function newCustomer() {
     // Force reflow to restart animation reliably
     void customerEl.offsetWidth;
     customerEl.classList.add("enter");
+    playSound("customerEnter"); // Sound: Customer walks in
   }
 
   // Generate order using new progressive difficulty system
@@ -958,6 +1033,7 @@ function checkChange() {
 function handleMathCorrect() {
   updateCustomerDisplay("happy");
   showFeedback("Correct! Great maths! 🌟", true);
+  playSound("cashRegister"); // Sound: Correct answer - cash register!
   
   // Reset mistake counter for next question
   mistakeCount = 0;
@@ -986,6 +1062,7 @@ function handleMathCorrect() {
 function handleMathWrong() {
   updateCustomerDisplay("sad");
   showFeedback("Not quite — try again!", false);
+  playSound("wrong"); // Sound: Wrong answer
   
   mistakeCount++;
   
@@ -1032,10 +1109,50 @@ function randInt(min, max) {
 
 
 /* =========================================================
+   Career Progression System
+========================================================= */
+const careerLevels = {
+  0: { title: "New Hire", emoji: "🆕" },
+  1: { title: "Kitchen Hand", emoji: "🧹" },
+  2: { title: "Server", emoji: "☕" },
+  3: { title: "Head Server", emoji: "⭐" },
+  4: { title: "Assistant Manager", emoji: "📋" },
+  5: { title: "Manager", emoji: "👔" },
+  6: { title: "Owner", emoji: "🏆" }
+};
+
+function showPromotionPopup(level) {
+  const career = careerLevels[level];
+  
+  if (!career) return; // No promotion for this level
+  
+  document.getElementById("promotionEmoji").textContent = career.emoji;
+  document.getElementById("promotionText").textContent = "You've been promoted to:";
+  document.getElementById("promotionRole").textContent = career.title;
+  
+  playSound("levelComplete"); // Use level complete sound for promotion
+  
+  document.getElementById("promotionPopup").classList.remove("hidden");
+}
+
+function closePromotionPopup() {
+  document.getElementById("promotionPopup").classList.add("hidden");
+  
+  // After closing promotion, continue to next level
+  if (currentLevel < 6) {
+    startLevel(currentLevel + 1);
+  } else {
+    showLevelSelect();
+  }
+}
+
+
+/* =========================================================
    Lunch Rush System
 ========================================================= */
 function showLunchRushPopup() {
   document.getElementById("lunchRushPopup").classList.remove("hidden");
+  playSound("lunchRush"); // Sound: Lunch rush incoming!
 }
 
 function continueLunchRush() {
@@ -1433,6 +1550,7 @@ function updateLivesDisplay() {
 function loseLife() {
   lives--;
   updateLivesDisplay();
+  playSound("loseLife"); // Sound: Lost a life
   
   if (lives <= 0) {
     // Game Over - show the game over screen
@@ -1476,6 +1594,9 @@ window.checkStepYesNo = checkStepYesNo;
 window.nextStepAfterInfo = nextStepAfterInfo;
 window.acceptStepByStepAnswer = acceptStepByStepAnswer;
 window.continueLunchRush = continueLunchRush;
+window.toggleSound = toggleSound;
+window.toggleMusic = toggleMusic;
+window.closePromotionPopup = closePromotionPopup;
 
 /* ============================================
    LEVEL 1: ITEM HUNT FUNCTIONS
@@ -1519,6 +1640,7 @@ function serveItemHunt(itemId, imgElement) {
   if (isCorrect) {
     // Mark item as found
     imgElement.classList.add('found');
+    playSound("itemFound"); // Sound: Item found!
     
     // Remove from remaining order
     currentOrder.splice(index, 1);
@@ -1557,6 +1679,7 @@ function serveItemHunt(itemId, imgElement) {
     
     updateCustomerDisplay("sad");
     loseLife();  // Lose a life for wrong answer
+    playSound("wrong"); // Sound: Wrong answer
     showFeedback("That's not what I ordered! 😢", false);
     
     setTimeout(() => {

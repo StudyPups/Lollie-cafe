@@ -88,6 +88,10 @@
         <p id="levelTitle">Level 1: Memory Challenge</p>
       </div>
       <div class="header-right">
+        <div class="sound-controls">
+          <button id="soundToggle" onclick="toggleSound()" class="sound-btn" title="Toggle sound effects">🔊</button>
+          <button id="musicToggle" onclick="toggleMusic()" class="sound-btn" title="Toggle background music">🎵</button>
+        </div>
         <p id="lives">❤️ ❤️ ❤️ ❤️</p>
         <p>Score: <span id="score">0</span></p>
         <p id="timerDisplay" class="hidden">Time: <span id="timer">60</span>s</p>
@@ -194,6 +198,21 @@
     <div id="feedback" class="feedback hidden"></div>
 
     <button onclick="quitToLevelSelect()" class="quit-button" type="button">Quit Level</button>
+  </div>
+
+  <!-- Career Progression Popup -->
+  <div id="promotionPopup" class="math-help-popup hidden">
+    <div class="promotion-content">
+      <h1 id="promotionTitle">🎉 Congratulations! 🎉</h1>
+      <div class="promotion-badge">
+        <div id="promotionEmoji" class="promotion-emoji">☕</div>
+      </div>
+      <div class="promotion-message">
+        <p id="promotionText">You've been promoted to:</p>
+        <p id="promotionRole" class="promotion-role">Server</p>
+      </div>
+      <button onclick="closePromotionPopup()" class="big-button" type="button">Awesome! Let's Go! 🚀</button>
+    </div>
   </div>
 
   <!-- Lunch Rush Popup -->
