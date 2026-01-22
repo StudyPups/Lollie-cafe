@@ -321,7 +321,7 @@ body {
 #gameScreen {
   position: relative;
   padding: 0;
-  background: #transparent;
+  background: transparent;
   justify-content: flex-start; /* override .screen centering */
 }
 
